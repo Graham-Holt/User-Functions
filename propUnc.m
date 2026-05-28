@@ -1,5 +1,5 @@
-function [dF, Fx] = propUnc(F,X,x,dx,C,c)
-% propUnc(F,x,dx,X,C,c) evaluates the uncertainty and value of a function
+function [dF, Fx] = propUnc(F,X,x,dx,method,C,c)
+% propUnc(F,x,dx,X) evaluates the uncertainty and value of a function
 % near a set of inputs with given uncertainties
 % 
 % Graham Holt, March 2026. Updated May 2026
@@ -7,6 +7,7 @@ function [dF, Fx] = propUnc(F,X,x,dx,C,c)
 % 
 %% Syntax
 % propUnc(F,x,dx,X)
+% propUnc(___,method)
 % propUnc(___,C,c)
 % dF = propUnc(___)
 % [dF, Fx] = propUnc(___)
@@ -27,6 +28,10 @@ function [dF, Fx] = propUnc(F,X,x,dx,C,c)
 % returns the uncertainty of the function with variable values 
 % "x" and uncertainties "dx"
 %
+% propUnc(___,method) sets whether or not the output uses the standard,
+% symmetric RMS method using partial derivatives (default), or computes the
+% asymmetric upper and lower bounds of the values ('abs')
+% 
 % propUnc(___,C,c) clears up some notation by defining constants used in
 % the function "F" which don't need different values
 %
@@ -40,13 +45,24 @@ if exist('c','var') && exist('C','var')
     F = subs(F,C,c);
 end
 
-for i = 1:length(X)
-    dFdX = diff(F,1,X(i));
-    for j = 1:size(x,1)
-        dF(j,i) = double(subs(dFdX,X,x(j,:)))*dx(j,i);
+for k = 1:size(x,1)
+    Fx(k,:) = double(subs(F,X,x(k,:)));
+end
+
+if strcmpi(method,'abs')
+    for k = 1:(2^size(x,2))
+        s = 2*(dec2bin(k-1,size(x,2))-'0')-1;
+        for j = 1:size(x,1)
+            Fdx(j,k) = double(subs(F,X,x(j,:) + s.*dx(j,:)));
+        end
     end
+    dF = double([min(Fdx,[],2) max(Fdx,[],2)] - Fx);
+else
+    for k = 1:length(X)
+        dFdX = diff(F,1,X(k));
+        for j = 1:size(x,1)
+            dF(j,k) = double(subs(dFdX,X,x(j,:)))*dx(j,k);
+        end
+    end
+    dF = double(sqrt(sum(dF.^2,2)));
 end
-for i = 1:size(x,1)
-   Fx(i,:) = double(subs(F,X,x(i,:))); 
-end
-dF = double(sqrt(sum(dF.^2,2)));
