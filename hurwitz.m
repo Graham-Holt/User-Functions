@@ -12,7 +12,7 @@ function [stable, RH] = hurwitz(p)
 %% Description
 % hurwitz(p) takes in a numerical or symbolic vector polynomial "p" and 
 % determines if it is Hurwitz stable, or the conditions for such stability.
-% If the polynomial "p" is numeric, the output "stable" will be eiter 0 or
+% If the polynomial "p" is numeric, the output "stable" will be either 0 or
 % 1. If not, "stable" will be a vector of symbolic conditions for which "p"
 % would be stable
 %
@@ -20,6 +20,7 @@ function [stable, RH] = hurwitz(p)
 % Routh-Hurwitz table used to determine stability, conditional or otherwise
 
 
+% Initializes the Routh-Hurwitz Table
 n = length(p); m = floor((n+1)/2);
 if mod(n,2)==0
     RH = [p(1:2:n); p(2:2:n)];
@@ -30,6 +31,7 @@ syms epsilon;
 RH = sym(RH);
 RH(RH(:,1)==0,1) = epsilon;
 
+% Constructs the Routh-Hurwitx Table
 while ~all(RH(end,:)==0)
     RH = [RH; zeros(1,m)];
     for j = 1:(m-1)
@@ -43,8 +45,9 @@ while ~all(RH(end,:)==0)
 end
 RH(end,:) = [];
 
-
+% Determines conditions for stability
 if ~isa(p,'numeric')
+    % Checks the all-positive case
     stable = []; assume(symvar(RH),'real'); assumeAlso(epsilon>0);
     for k = 1:size(RH,1)
         stable = [stable; simplify(RH(k,1)>0)];
@@ -55,6 +58,7 @@ if ~isa(p,'numeric')
             assumeAlso(stable(stable~=symtrue));
         end
     end
+    % Checks the all-negative case, if positive case fails
     if any(stable==symfalse)
         stable = []; assume(symvar(RH),'real'); assumeAlso(epsilon<0);
         for k = 1:size(RH,1)
@@ -73,5 +77,6 @@ else
     stable = all(sign(RH(:,1))==sign(RH(1,1)));
 end
 
+% Removes "epsilon" variable which stands in for zeros
 stable = limit(stable,epsilon,0,'right');
 RH = limit(RH,epsilon,0,'right');
