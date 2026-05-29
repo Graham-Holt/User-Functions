@@ -43,12 +43,12 @@ while ~all(RH(end,:)==0)
         end
     end
 end
-RH(end,:) = [];
+RH(end,:) = []; RH = simplify(RH);
 
 % Determines conditions for stability
 if ~isa(p,'numeric')
     % Checks the all-positive case
-    stable = []; assume(symvar(RH),'real'); assumeAlso(epsilon>0);
+    stable = []; assume(epsilon>0);
     for k = 1:size(RH,1)
         stable = [stable; simplify(RH(k,1)>0)];
         if any(stable==symfalse)
@@ -60,7 +60,7 @@ if ~isa(p,'numeric')
     end
     % Checks the all-negative case, if positive case fails
     if any(stable==symfalse)
-        stable = []; assume(symvar(RH),'real'); assumeAlso(epsilon<0);
+        stable = []; assume(epsilon<0);
         for k = 1:size(RH,1)
             stable = [stable; simplify(RH(k,1)<0)];
             if any(stable==symfalse)
