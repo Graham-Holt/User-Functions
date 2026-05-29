@@ -10,12 +10,15 @@ function R = rotTheta(theta,u)
 % R = rotTheta(theta,u)
 % 
 %% Description
-% rotTheta(theta,u) takes in an angle "theta" (in radians) and a 3D unit
-% vector "u" and returns the matrix which rotates a 3D vector about "u" by
-% "theta".
+% rotTheta(theta,u) takes in angles "theta" (in radians) and 3D vectors "u" 
+% and returns the matrix which rotates a 3D vector about "u" by "theta" in
+% sequence.
 
-if length(u)~=3
-    error('Input must be columnm vector with length 3');
+if size(u,1)~=3
+    error('Input must be columnm vector, or array of column vectors, with dimension 3');
 end
 
-R = expm(theta*crossmat(u/norm(u)));
+R = eye(3); u = u./vecnorm(u,2,1);
+for k = 1:length(theta)
+    R = expm(theta(k)*crossmat(u(:,k)))*R;
+end

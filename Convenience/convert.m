@@ -23,7 +23,8 @@ function x2 = convert(x1,u1,u2,abs)
 u1 = str2symunit(u1); u2 = str2symunit(u2);
 
 if abs
-    x2 = double(separateUnits(unitConvert(x1*u1,u2,'Temperature','absolute')));
+    % Inclusion of small factor to allow for zero-temperature input
+    x2 = double(separateUnits(unitConvert((x1+1e-16)*u1,u2,Temperature='absolute')));
 else
-    x2 = double(separateUnits(unitConvert(x1*u1,u2,'Temperature','difference')));
+    x2 = double(separateUnits(unitConvert(x1*u1,u2)));
 end
