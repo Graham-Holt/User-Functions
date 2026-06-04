@@ -1,21 +1,24 @@
-function p = polyShape(x,d,f)
-% polyShape(x,d,f) generates a polynomial shape function using derivatives
+function p = polyEase(x,d,f)
+% polyEase(x,d,f) generates a polynomial easing function using derivatives
 % at various points
 % 
-% Graham Holt, April 2026. Updated May 2026
+% Graham Holt, April 2026. Updated June 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% polyShape(x,d,f)
-% p = polyShape(___)
+% polyEase(x,d,f)
+% p = polyEase(___)
 % 
 %% Description
-% polyShape(x,d,f) takes returns the simplest polynomial which has the 
-% derivatives "d" equal to "f" at "x"
+% polyEase(x,d,f) returns the simplest polynomial which has the derivatives 
+% "d" equal to "f" at "x"
 
 % Ensures that the polynomial is possible
 if any(d >= length(d)-1)
     error(['Order of derivative (',num2str(max(d)),') must be less than order of polynomial (',num2str(length(d)-1),').']);
+end
+if size(f,1)>1
+    f = f.';
 end
 
 % Initializes matrix for solution
