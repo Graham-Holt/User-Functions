@@ -1,4 +1,4 @@
-function [S,BT] = butcherERK(p,method,alpha)
+function S = butcherERK(p)
 
 s = p; Phi = {};
 for k = 1:p
@@ -15,7 +15,7 @@ end
 if iscell(Phi)
     Phi = cell2mat(Phi);
 end
-gamma = Phi(end,:)'; Phi = Phi(1:(end-1),:)';
+gamma = Phi(end,:).'; Phi = Phi(1:(end-1),:).';
 
 if ~exist('method','var')
     method = 'L';
@@ -24,26 +24,76 @@ end
 A = sym('a%d%d',[s s]); A = tril(A,-1); 
 b = sym('b%d',[s 1]); 
 c = sym('c%d',[s 1]); c(1) = 0;
-assume([symvar(A) symvar(b) symvar(c)],'real');
-assumeAlso([symvar(b) symvar(c)],'positive');
-numIndeVars = 0.5*s*(s+1)-size(Phi,2);
 
-if any(strcmpi(method,{'Gauss','G'}))
-    
-    
-elseif any(strcmpi(method,{'Radau','R'}))
-    
-
-elseif any(strcmpi(method,{'Lobatto','L'}))
-    
-
-elseif any(strcmpi(method,{'Custom','C'}))
-    if length(alpha)~=numIndeVars
-        error(['Order conditions require ',numstr(numIndeVars),' free variables.']);
-    end
+S = [Phi*b==gamma; c(2:end)==A(2:end,:)*ones(s,1)];
 
 end
 
-depVars = [symvar(A) symvar(b) symvar(c)];
-S = solve([Phi*b==gamma; c==A*ones(s,1)],depVars,'ReturnConditions',true,'Real',true);
-depVars_str = string(depVars); indeVars = S.parameters; indeVars_str = string(indeVars);
+% Rooted Trees
+function T = rootTree(p,s)
+
+if s<p
+    error('Number of steps must be greater than or equal to the order');
+end
+if p==1
+    T = {ones(s+1,1)};
+    return;
+end
+
+A = sym('a%d%d',[s s]); A = blkdiag(tril(A,-1),1);
+K = intpartition(p-1); k = 1;
+for j = 1:length(K)
+    Phi = {}; M = [];
+    for i = 1:length(K{j})
+        Phi{i} = rootTree(K{j}(i),s);
+        M(i) = size(Phi{i},2);
+    end
+    I = ones(1,length(Phi));
+    while all(I<=M)
+        T{k} = [ones(s,1); 1/p];
+        for m = 1:length(Phi)
+            T{k} = T{k}.*(A*Phi{m}(:,I(m)));
+        end
+
+        k = k + 1;
+        if all(I==M)
+            break;
+        end
+
+        I(end) = I(end)+1;
+        while any(I>M)
+            I(find(I>M,1,'last')+1) = I(find(I>M,1,'last')+1)+1;
+            I(find(I>M,1,'last')) = 1;
+        end
+    end
+end
+
+end
+
+% Integer partitions
+function P = intpartition(n)
+
+p = zeros(1,n); p(1) = n;
+P = {}; k = 1;
+
+while true
+    P{end+1} = p(1:k);
+    if k==n
+        return;
+    end
+
+    r = k - find(p>1,1,'last') + 1;
+    k = find(p>1,1,'last');
+    p(k) = p(k) - 1;
+
+    while r>p(k)
+        p(k+1) = p(k);
+        r = r - p(k);
+        k = k + 1;
+    end
+
+    p(k+1) = r;
+    k = k + 1;
+end
+
+end
