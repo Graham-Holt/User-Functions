@@ -1,4 +1,15 @@
 function P = intpartition(n)
+% intpartition(n) generates the integer partitions of "n".
+% 
+% Graham Holt, June 2026. Updated June 2026.
+% Embry-Riddle Aeronautical University
+% 
+%% Syntax
+% intpartition(n)
+% P = intpartition(n)
+% 
+%% Description
+% intpartition(n) returns a cell array with the integer partitions of "n".
 
 p = zeros(1,n); p(1) = n;
 P = {}; k = 1;

@@ -1,4 +1,17 @@
 function S = butcherERK(p)
+% butcherERK(p) generates the order conditions for a stable, p-order,
+% explicit Runge-Kutta Method.
+% 
+% Graham Holt, June 2026. Updated June 2026.
+% Embry-Riddle Aeronautical University
+% 
+%% Syntax
+% butcherERK(p)
+% S = butcherERK(___)
+% 
+%% Description
+% butcherERK(p) generates the order conditions for a stable, p-order,
+% explicit Runge-Kutta Method.
 
 s = p; Phi = {};
 for k = 1:p
@@ -17,20 +30,28 @@ if iscell(Phi)
 end
 gamma = Phi(end,:).'; Phi = Phi(1:(end-1),:).';
 
-if ~exist('method','var')
-    method = 'L';
-end
-
-A = sym('a%d%d',[s s]); A = tril(A,-1); 
+A = sym('a%d%d',[s s]);
 b = sym('b%d',[s 1]); 
-c = sym('c%d',[s 1]); c(1) = 0;
+c = sym('c%d',[s 1]);
 
-S = [Phi*b==gamma; c(2:end)==A(2:end,:)*ones(s,1)];
+S = [Phi*b==gamma; c==tril(A,-1)*ones(s,1)];
 
 end
 
-% Rooted Trees
 function T = rootTree(p,s)
+% rootTree(p,s) generates the elementary weights and reciprocal density of
+% a p-order rooted tree summed over "s" steps.
+% 
+% Graham Holt, June 2026. Updated June 2026.
+% Embry-Riddle Aeronautical University
+% 
+%% Syntax
+% rootTree(p,s)
+% S = rootTree(___)
+% 
+%% Description
+% rootTree(p,s) generates the elementary weights and reciprocal density of
+% a p-order rooted tree summed over "s" steps.
 
 if s<p
     error('Number of steps must be greater than or equal to the order');
@@ -70,8 +91,18 @@ end
 
 end
 
-% Integer partitions
 function P = intpartition(n)
+% intpartition(n) generates the integer partitions of "n".
+% 
+% Graham Holt, June 2026. Updated June 2026.
+% Embry-Riddle Aeronautical University
+% 
+%% Syntax
+% intpartition(n)
+% P = intpartition(n)
+% 
+%% Description
+% intpartition(n) returns a cell array with the integer partitions of "n".
 
 p = zeros(1,n); p(1) = n;
 P = {}; k = 1;

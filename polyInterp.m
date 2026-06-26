@@ -1,17 +1,17 @@
-function p = polyEase(x,d,f)
-% polyEase(x,d,f) generates a polynomial easing function using derivatives
-% at various points
+function p = polyInterp(x,d,f)
+% polyInterp(x,d,f) generates the simplest polynomial function defined by 
+% its derivatives at various points
 % 
 % Graham Holt, April 2026. Updated June 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% polyEase(x,d,f)
-% p = polyEase(___)
+% polyInterp(x,d,f)
+% p = polyInterp(___)
 % 
 %% Description
-% polyEase(x,d,f) returns the simplest polynomial which has the derivatives 
-% "d" equal to "f" at "x"
+% polyInterp(x,d,f) returns the simplest polynomial which has the 
+% derivatives "d" equal to "f" at "x"
 
 % Ensures that the polynomial is possible
 if ~(length(d)==length(x) && length(f)==length(x))
@@ -49,4 +49,4 @@ else
 end
 
 % Reduces polynomial to minimal degree
-p = p(find(p~=0,1,'first'):end).';
+p = p(find(p~=0,1):end).';
