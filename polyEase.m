@@ -14,33 +14,39 @@ function p = polyEase(x,d,f)
 % "d" equal to "f" at "x"
 
 % Ensures that the polynomial is possible
-if any(d >= length(d)-1)
-    error(['Order of derivative (',num2str(max(d)),') must be less than order of polynomial (',num2str(length(d)-1),').']);
+if ~(length(d)==length(x) && length(f)==length(x))
+    error('Vetcor inputs must have the same length');
 end
-if size(f,1)>1
-    f = f.';
+if any(d > length(d)-1) || any(d~=round(d))
+    error('Order of derivative must be an integer less than or equal to the order of polynomial.');
 end
+x = reshape(x,[],1); f = reshape(f,[],1);
 
 % Initializes matrix for solution
-n = length(d); 
+n = length(x); P = zeros(n);
 if ~(isa(x,'numeric')&isa(f,'numeric'))
-    P = sym(zeros(n));
-else
-    P = zeros(n);
+    P = sym(P);
 end
 
 % Constructs matrix and augments with function values
 for k = 1:n
-    for j = 1:(n-d(k))
-        P(k,j+d(k)) = prod(j - 1 + (1:d(k)))*(x(k)^(j-1));
+    P(k,:) = [zeros(1,d(k)) x(k).^(0:(n-1-d(k)))];
+    for j = 1:d(k)
+       P(k,:) = P(k,:).*circshift(0:(n-1),j-1);
     end
 end
-Paug = rref([P f.']);
+P = flip(P,2); Paug = rref([P f]); r = rank(P);
 
-% Checks if the conditions are compatible or redundant
-if det(P)==0 && Paug(end,end)==0
-    error('One or more conditions are redundant.');
-elseif det(P)==0 && Paug(end,end)~=0
-    error('Conditions are incompatible.');
+% Finds singular or minimum norm solution
+if r==n 
+    p = P\f;
+elseif r~=n && Paug(end,end)==0
+    P = Paug(1:r,1:(end-1));
+    f = Paug(1:r,end);
+    p = P.'/(P*P.')*f;
+else
+    error('One or more conditions are incompatible.');
 end
-p = flip(f/(P.'));
+
+% Reduces polynomial to minimal degree
+p = p(find(p~=0,1,'first'):end).';
