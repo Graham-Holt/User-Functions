@@ -2,7 +2,7 @@ function [dF, Fx] = propUnc(F,X,x,dx,method,C,c)
 % propUnc(F,x,dx,X) evaluates the uncertainty and value of a function
 % near a set of inputs with given uncertainties
 % 
-% Graham Holt, March 2026. Updated May 2026
+% Graham Holt, March 2025. Updated May 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
@@ -47,7 +47,7 @@ if exist('c','var') && exist('C','var')
     F = subs(F,C,c);
 end
 
-% Evaluates function as the given inputs
+% Evaluates function at the given inputs
 for k = 1:size(x,1)
     Fx(k,:) = double(subs(F,X,x(k,:)));
 end
