@@ -13,28 +13,21 @@ function S = butcherERK(p)
 % butcherERK(p) generates the order conditions for a stable, p-order,
 % explicit Runge-Kutta Method.
 
-s = p; Phi = {};
+tau = 0;
+for k = 1:p
+    tau = tau + numRootTree(k);
+end
+
+s = ceil(0.5*(sqrt(1 + 8*tau) - 1)); Phi = {};
 for k = 1:p
     Phi{k} = cell2mat(rootTree(k,s));
 end
-Phi = cell2mat(Phi);
+Phi = cell2mat(Phi); gamma = Phi(end,:).'; Phi = Phi(1:(end-1),:).';
 
-if size(Phi,2)>0.5*s*(s+1)
-    s = ceil(0.5*(sqrt(1 + 8*size(Phi,2)) - 1)); Phi = {};
-    for k = 1:p
-        Phi{k} = cell2mat(rootTree(k,s));
-    end
-end
-if iscell(Phi)
-    Phi = cell2mat(Phi);
-end
-gamma = Phi(end,:).'; Phi = Phi(1:(end-1),:).';
-
-A = sym('a%d%d',[s s]);
-b = sym('b%d',[s 1]); 
-c = sym('c%d',[s 1]);
+A = sym('a%d%d',[s s]); b = sym('b%d',[s 1]);  c = sym('c%d',[s 1]);
 
 S = [Phi*b==gamma; c==tril(A,-1)*ones(s,1)];
+disp(['Order conditions require ',num2str(s),' steps and ',num2str(0.5*s*(s+1)-size(Phi,1)),' free parameters']);
 
 end
 
@@ -50,8 +43,8 @@ function T = rootTree(p,s)
 % S = rootTree(___)
 % 
 %% Description
-% rootTree(p,s) generates the elementary weights and reciprocal density of
-% a p-order rooted tree summed over "s" steps.
+% rootTree(p,s) returns the elementary weights and reciprocal density of
+% a p-order rooted tree summed over "s" steps as a cell array.
 
 if s<p
     error('Number of steps must be greater than or equal to the order');
@@ -83,13 +76,42 @@ for j = 1:length(K)
 
         I(end) = I(end)+1;
         while any(I>M)
-            I(find(I>M,1,'last')+1) = I(find(I>M,1,'last')+1)+1;
+            I(find(I>M,1,'last')-1) = I(find(I>M,1,'last')-1)+1;
             I(find(I>M,1,'last')) = 1;
         end
     end
 end
 
 end
+
+function T = numRootTree(p)
+% numRootTree(p) counts the number of rooted trees of order "p".
+% 
+% Graham Holt, June 2026. Updated June 2026.
+% Embry-Riddle Aeronautical University
+% 
+%% Syntax
+% numRootTree(p)
+% T = numRootTree(___)
+% 
+%% Description
+% numRootTree(p) returns the number of rooted trees of order "p".
+
+if p==1
+    T = 1; return;
+end
+
+T = 0; P = intpartition(p-1);
+for k = 1:length(P)
+    tau = 1;
+    for j = 1:length(P{k})
+        tau = tau*numRootTree(P{k}(j));
+    end
+    T = T + tau;
+end
+
+end
+
 
 function P = intpartition(n)
 % intpartition(n) generates the integer partitions of "n".
