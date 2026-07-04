@@ -1,7 +1,8 @@
 function P = pconv(varargin)
-% pconv(p) performs vector convolutions for polynomial multiplication
+% pconv(p1,p2,...) performs vector convolutions for polynomial 
+% multiplication
 % 
-% Graham Holt, May 2026. Updated June 2026
+% Graham Holt, May 2026. Updated July 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
@@ -9,9 +10,9 @@ function P = pconv(varargin)
 % P = pconv(___)
 % 
 %% Description
-% pconv(p) returns a row vector with the coefficients of the product of
-% input polynomials numeric or symbolic vectors of coefficients using
-% discrete, direct convolution
+% pconv(p1,p2,...) returns a row vector with the coefficients of the 
+% product of input polynomials numeric or symbolic vectors of coefficients 
+% using discrete, direct convolution
 
 P = reshape(varargin{1},1,[]);
 for k = 2:length(varargin)
