@@ -42,10 +42,10 @@ for k = 1:n
     f(k) = polyval(pTemp,r(k));
 end
 
-end
-
 % Compute reduced polynomial
 p = polyInterp(r,d,f);
+
+end
 
 function p = polyInterp(x,d,f)
 % polyInterp(x,d,f) generates the simplest polynomial function defined by 
