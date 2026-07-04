@@ -15,7 +15,7 @@ function p = polyMod(p,m,tol)
 %
 % polyMod(___,tol) uses the value "tol" to distinguish roots to this level
 % of precision. It is recommended to use the default 1e-6, as this is the
-% general precision of the roots() function
+% general precision of the built-in roots() function
 
 if ~exist('tol','var')
     tol = 1e-6;
