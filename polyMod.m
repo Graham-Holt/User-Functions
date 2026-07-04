@@ -1,3 +1,52 @@
+function p = polyMod(p,m,tol)
+% polyMod(p,m) finds a reduction of the given polynomial with respect to a
+% polynomial modulus.
+% 
+% Graham Holt, July 2026. Updated July 2026
+% Embry-Riddle Aeronautical University
+% 
+%% Syntax
+% polyMod(p,m)
+% polyMod(___,tol)
+% p = polyMod(___)
+% 
+%% Description
+% polyMod(p,m) returns the reduced polynomial of "p" modulo "m".
+%
+% polyMod(___,tol) uses the value "tol" to distinguish roots to this level
+% of precision. It is recommended to use the default 1e-6, as this is the
+% general precision of the roots() function
+
+if ~exist('tol','var')
+    tol = 1e-6;
+end
+
+% Evaluates roots to choosen level of detail
+r = round(roots(m),ceil(-log10(tol)));
+
+% Determines derivative needed to accomodate repeated roots
+n = length(r); k = 1; d = zeros(1,n);
+while k<=n
+    t = sum(abs(r-r(k))<=tol);
+    d(k:(k+t-1)) = 0:(t-1);
+    k = k + t;
+end
+
+% Evaluate polynomial derivatives at modulus roots
+del = length(p) - (1:length(p));
+for k = 1:n
+    pTemp = p;
+    for j = 1:d(k)
+        pTemp = circshift(pTemp.*del,1);
+    end
+    f(k) = polyval(pTemp,r(k));
+end
+
+end
+
+% Compute reduced polynomial
+p = polyInterp(r,d,f);
+
 function p = polyInterp(x,d,f)
 % polyInterp(x,d,f) generates the simplest polynomial function defined by 
 % its derivatives at various points
@@ -51,3 +100,4 @@ end
 
 % Reduces polynomial to minimal degree
 p = p(find(p~=0,1):end).';
+end
