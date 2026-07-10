@@ -55,6 +55,7 @@ if ~isa(p,'numeric')
     RH = simplify(RH);
     % Checks the all-positive case
     stable = sym(zeros(size(RH,1),1)); assume(epsilon>0);
+
     for k = 1:size(RH,1)
         stable(k) = simplify(RH(k,1)>0);
         if stable(k)==symfalse
@@ -62,6 +63,7 @@ if ~isa(p,'numeric')
             break;
         end
     end
+
     % Checks the all-negative case, if positive case fails
     if any(stable==symfalse)
     stable = sym(zeros(size(RH,1),1)); assume(epsilon<0);
@@ -73,6 +75,7 @@ if ~isa(p,'numeric')
         end
     end
     end
+    
     if stable(k)==symfalse
         stable = false;
     end
@@ -87,6 +90,7 @@ RH = limit(RH,epsilon,0,'right');
 assume(epsilon,'clear');
 
 if ~isa(p,'numeric')
+
 for k = 1:length(stable)
     if stable(k)==symtrue
         continue;
@@ -94,5 +98,6 @@ for k = 1:length(stable)
     assume([prevAssume stable(k)]);
     stable([1:(k-1) (k+1):end]) = simplify(stable([1:(k-1) (k+1):end]));
 end
+
 end
 assume(prevAssume);

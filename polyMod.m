@@ -51,5 +51,3 @@ end
 
 % Compute reduced polynomial
 p = polyInterp(r,d,f);
-
-end
