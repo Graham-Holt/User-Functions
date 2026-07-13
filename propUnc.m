@@ -1,66 +1,75 @@
-function [dF, Fx] = propUnc(F,X,x,dx,C,c,method)
-% propUnc(F,x,dx,X) evaluates the uncertainty and value of a function
-% near a set of inputs with given uncertainties
+function [funcUnc, funcEvalX] = propUnc(func,xName,xValue,xUnc,constName,constValue,method)
+% propUnc(func,xName,xValue,xUnc) evaluates the uncertainty and value of a 
+% function near a set of inputs with given uncertainties
 % 
 % Graham Holt, March 2025. Updated July 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% propUnc(F,x,dx,X)
+% propUnc(func,xName,xValue,xUnc)
+% propUnc(___,constName,constValue)
 % propUnc(___,method)
-% propUnc(___,C,c)
-% dF = propUnc(___)
-% [dF, Fx] = propUnc(___)
+% funcUncertainty = propUnc(___)
+% [funcUncertainty, funcEvalX] = propUnc(___)
 % 
 %% Description
-%   F  - function relating the variables "X", expressed as a string
-%   X  - variables within "F", expressed as a row vector of strings
-%   x  - values of "X" to be considered, with each column corresponding to 
-%        a different variable in "X"
-%   dx - uncertainty in the values of "X", with each column, or pair of 
-%        columns (w/ 'abs' method), corresponding to a different variable 
-%        in X
-%   C  - symbols used for "c" in "F", expressed as a row vector of
-%        strings
-%   c  - values for constants in "F", with element corresponding to a 
-%        different constant in "C" 
+% ****All inputs are either numeric arrays or a row vector of strings.****
 %
-% propUnc(F,x,dx,X) takes the function "F", with variables "X", and 
-% returns the uncertainty of the function with variable values 
-% "x" and uncertainties "dx".
+% propUnc(func,xName,xValue,xUnc) takes the function "func" with variables 
+% "xName", and returns the uncertainty of the function with variable values 
+% "xValue" and uncertainties "xUnc".
 %
-% propUnc(___,C,c) clears up some notation by defining constants used in
-% the function "F" which don't need different values. If not included, use
-% empty string or cell array.
+% propUnc(___,constName,constValue) clears up some notation by defining 
+% constants used in the function "func" which don't need different values. 
+% If not included, use empty string or cell array.
 %
 % propUnc(___,method) sets whether or not the output uses the standard,
 % symmetric RMS method using partial derivatives (default), or computes the
 % asymmetric upper and lower bounds of the values ('abs').
 %
-% [dF, Fx] = propUnc(___) includes the output of the function values for
-% the given inputs.
+% [funcUnc, funcEvalX] = propUnc(___) includes the output of the function 
+% values for the given inputs.
+%
+%% Example
+% Consider a calculation of air density from pressure, temperature, and the
+% specific gas constant.
+% 
+%  propUnc("p/(R*T)",["p","T","R"],...
+%          [pres, temp, 287*ones(length(pres),1)],...
+%          [pres_Unc,temp_Unc,zeros(length(pres),1])
+%
+% We can tidy this up by passing "R" as a constant value.
+%
+%  propUnc("p/(R*T)",["p","T"],[pres, temp],[pres_Unc, temp_Unc],"R",287)
+%
+% If we had upper and lower bounds for pressure and temperature, we can use
+% the following.
+%
+%  propUnc("p/(R*T)",["p","T"],[pres, temp],...
+%          [pres_Unc_lo, pres_Unc_hi, temp_Unc_lo, temp_Unc_hi],...
+%          "R",287)
+%
+% Additionally, by using the 'abs' method, we can get asymmetric upper and 
+% lower bounds for the resulting air density.
 
-% Converts strings into usable symbolic functions
-X = str2sym(X); F = str2sym(F); symmetric = size(x,2)==size(dx,2);
+% Converts strings into usable symbolic objects
+xName = str2sym(xName); func = str2sym(func);
 
 % Pre-inserts constants where possible
-if exist('c','var') && exist('C','var')
-    C = str2sym(C);
-    F = subs(F,C,c);
+if exist('constName','var') && exist('constValue','var')
+    constName = str2sym(constName);
+    func = subs(func,constName,constValue);
 end
 
 % Selects default method
+symmetric = size(xValue,2)==size(xUnc,2);
 if ~exist('method','var')
-    if ~symmetric
-        method = 'abs';
-    else
-        method = 'rms';
-    end
+    method = 'rms';
 end
 
 % Evaluates function at the given inputs
-for k = 1:size(x,1)
-    Fx(k,:) = double(subs(F,X,x(k,:)));
+for k = 1:size(xValue,1)
+    funcEvalX(k,:) = double(subs(func,xName,xValue(k,:)));
 end
 
 if strcmpi(method,'abs')
@@ -68,33 +77,37 @@ if strcmpi(method,'abs')
 
 % Puts symmetric uncertainies into asymmetric form
 if symmetric
-    collate = reshape([0; size(x,2)]+(1:size(x,2)),1,[]);
-    dx = [-dx dx]; dx = dx(:,collate);
+    collate = reshape([0; size(xValue,2)]+(1:size(xValue,2)),1,[]);
+    xUnc = [-xUnc xUnc]; xUnc = xUnc(:,collate);
 end
 
-for k = 1:(2^size(x,2))    
+for k = 1:(2^size(xValue,2))    
     % Selects each combination of uncertainties to comparison
-    selectUnc = (dec2bin(k-1,size(x,2))-'0') - 1 + (2:2:size(dx,2));
-    for j = 1:size(x,1)
-        Fdx(j,k) = double(subs(F,X,x(j,:)+dx(j,selectUnc)));
+    selectXUncertainty = (dec2bin(k-1,size(xValue,2))-'0') - 1 + (2:2:size(xUnc,2));
+    for j = 1:size(xValue,1)
+        funcEvalX_perturb(j,k) = double(subs(func,xName,xValue(j,:)+xUnc(j,selectXUncertainty)));
     end
 end
-dF = double([min(Fdx,[],2) max(Fdx,[],2)] - Fx);
+funcUnc = double([min(funcEvalX_perturb,[],2) max(funcEvalX_perturb,[],2)] - funcEvalX);
+
+if symmertric
+    funcUnc = max(abs(funcUnc),[],2);
+end
 
 else
 % Uses partial derivatives to approximate effect of uncertainities
 
 % Considers largest deviation for uncertainty
 if ~symmetric
-    dx = cat(3,dx(:,1:2:end),dx(:,2:2:end));
-    dx = max(abs(dx),[],3);
+    xUnc = cat(3,xUnc(:,1:2:end),xUnc(:,2:2:end));
 end
 
-for k = 1:length(X)
-    for j = 1:size(x,1)
-        dF(j,k) = subs(diff(F,1,X(k)),X,x(j,:))*dx(j,k);
+for k = 1:length(xName)
+    for j = 1:size(xValue,1)
+        funcUnc(j,k,:) = double(subs(diff(func,1,xName(k)),xName,xValue(j,:))).*xUnc(j,k,:);
     end
 end
-dF = double(sqrt(sum(dF.^2,2)));
+funcUnc = sqrt(sum(funcUnc.^2,2));
+funcUnc = reshape(funcUnc,size(funcUnc,1),[],1);
 
 end
