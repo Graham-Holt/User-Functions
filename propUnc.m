@@ -90,7 +90,7 @@ for k = 1:(2^size(xValue,2))
 end
 funcUnc = double([min(funcEvalX_perturb,[],2) max(funcEvalX_perturb,[],2)] - funcEvalX);
 
-if symmertric
+if symmetric
     funcUnc = max(abs(funcUnc),[],2);
 end
 
@@ -108,6 +108,6 @@ for k = 1:length(xName)
     end
 end
 funcUnc = sqrt(sum(funcUnc.^2,2));
-funcUnc = reshape(funcUnc,size(funcUnc,1),[],1);
+funcUnc = reshape(funcUnc.*sign(xUnc(1,1,:)),size(funcUnc,1),[],1);
 
 end
