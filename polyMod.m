@@ -31,6 +31,7 @@ if license('test','symbolic_toolbox')
 else
     r = round(roots(m),ceil(-log10(tol)));
 end
+
 % Determines derivative needed to accomodate repeated roots
 k = 1; d = zeros(1,n);
 while k<=n

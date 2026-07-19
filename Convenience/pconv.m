@@ -17,11 +17,11 @@ function P = pconv(varargin)
 P = reshape(varargin{1},1,[]);
 for k = 2:length(varargin)
     % Steps through all inputs to convolve each vector in input
-    n1 = length(P); n2 = length(varargin{k});
-    M = [P.*reshape(varargin{k},[],1) zeros(n2,n2-1)];
+    n = length(P); m = length(varargin{k});
+    M = [P.*reshape(varargin{k},[],1) zeros(m,m-1)];
 
-    P = zeros(1,n1+n2-1);
-    for j = 1:n2
+    P = zeros(1,n+m-1);
+    for j = 1:m
         P = P + circshift(M(j,:),j-1);
     end
 end
