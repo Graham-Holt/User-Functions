@@ -1,19 +1,26 @@
-function p = polyInterp(x,d,f)
-% polyInterp(x,d,f) generates the simplest polynomial function defined by 
-% its derivatives at various points
+function p = polyInterp(x,f,d)
+% polyInterp(x,f) generates the simplest polynomial function defined by its 
+% derivatives at various points
 % 
 % Graham Holt, April 2026. Updated July 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% polyInterp(x,d,f)
+% polyInterp(x,f)
+% polyInterp(___,d)
 % p = polyInterp(___)
 % 
 %% Description
-% polyInterp(x,d,f) returns the simplest polynomial which has derivatives 
-% "d" equal to "f" at "x"
+% polyInterp(x,f) returns the simplest polynomial which evaluates to "f" at
+% "x"
+%
+% polyInterp(___,d) considers the order "d" derivative of the polynomial to
+% equal "f" at "x".
 
 % Ensures that there exists an interpolating solution (no least-squares)
+if nargin<3
+    d = zeros(length(x),1);
+end
 if ~(length(d)==length(x) && length(f)==length(x))
     error('Vetcor inputs must have the same length');
 end

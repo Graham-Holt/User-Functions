@@ -1,4 +1,4 @@
-function [stable, RH] = hurwitz(p)
+function [stable, tabRH] = hurwitz(p)
 % hurwitz(p) determines conditions for Hurwitz stability on polynomials
 % 
 % Graham Holt, March 2026. Updated June 2026
@@ -16,81 +16,71 @@ function [stable, RH] = hurwitz(p)
 % 1. If not, "stable" will be a vector of symbolic conditions for which "p"
 % would be stable
 %
-% [stable, RH] = hurwitz(p) includes the variable "RH" which contains the
-% Routh-Hurwitz table used to determine stability, conditional or otherwise
+% [stable, tabRH] = hurwitz(p) includes the variable "tabRH" which contains 
+% the Routh-Hurwitz table used to determine stability, conditional or 
+% otherwise
 
 
 % Keeps previous assumptions in tact
 prevAssume = assumptions;
 
+% Removes need to check both positive and negative case
+p = sign(p(1))*p;
+
 % Initializes the Routh-Hurwitz Table
-n = length(p); m = floor((n+1)/2);
-if mod(n,2)==0
-    RH = [p(1:2:n); p(2:2:n)];
+polyLen = length(p); tabWidth = floor((polyLen+1)/2);
+tabRH = sym(zeros(polyLen,tabWidth));
+if mod(polyLen,2)==0
+    tabRH(1:2,:) = [p(1:2:polyLen); p(2:2:polyLen)];
 else
-    RH = [p(1:2:n); p(2:2:n) 0];
+    tabRH(1:2,:) = [p(1:2:polyLen); p(2:2:polyLen) 0];
 end
-syms epsilon;
-RH = sym(RH); RH(RH(:,1)==0,1) = epsilon;
+syms epsilon; assume(epsilon>0);
+if tabRH(2,1)==0  tabRH(2,1) = epsilon; end
 
 % Constructs the Routh-Hurwitx Table
-for k = 3:length(p)
-    RH = [RH; zeros(1,m)];
-    for j = 1:(m-1)
-        RH(k,j) = (1/RH(k-1,1))*det([RH(k-1,1) RH(k-1,j+1);...
-                                     RH(k-2,1) RH(k-2,j+1)]);
-        if k==length(p) && all(RH(k,:)==0)
+for k = 3:polyLen
+    for j = 1:(tabWidth-1)
+        tabRH(k,j) = (1/tabRH(k-1,1))*det([tabRH(k-1,1) tabRH(k-1,j+1);...
+                                     tabRH(k-2,1) tabRH(k-2,j+1)]);
+        if k==polyLen && tabRH(k,1)==0
             stable = false;
             warning('Marginal stability detected.');
             return;
-        elseif RH(k,1)==0
-            RH(k,1) = epsilon;
+        elseif tabRH(k,1)==0
+            tabRH(k,1) = epsilon;
         end
     end
 end
-RH(end,:) = [];
 
-% Determines conditions for stability
 if ~isa(p,'numeric')
-    RH = simplify(RH);
-    % Checks the all-positive case
-    stable = sym(zeros(size(RH,1),1)); assume(epsilon>0);
-
-    for k = 1:size(RH,1)
-        stable(k) = simplify(RH(k,1)>0);
-        if stable(k)==symfalse
-            assume(epsilon,'clear');
-            break;
-        end
-    end
-
-    % Checks the all-negative case, if positive case fails
-    if any(stable==symfalse)
-    stable = sym(zeros(size(RH,1),1)); assume(epsilon<0);
-    for k = 1:size(RH,1)
-        stable(k) = simplify(RH(k,1)<0);
-        if stable(k)==symfalse
-            assume(epsilon,'clear');
-            break;
-        end
-    end
-    end
     
-    if stable(k)==symfalse
-        stable = false;
+    % Initializes conditions and Routh-Hurwitz table
+    tabRH = simplify(tabRH);
+    stable = sym(zeros(size(tabRH,1),1));
+    
+    % Determines symbolic conditions for stability
+    for k = 1:size(tabRH,1)
+        stable(k) = simplify(tabRH(k,1)>0);
+        if stable(k)==symfalse
+            stable = false;
+            break;
+        end
     end
+
 else
-    assume(epsilon>0);
-    stable = all(sign(RH(:,1))==sign(RH(1,1)));
+    % Determines stability for numeric case
+    stable = all(sign(tabRH(:,1))==sign(tabRH(1,1)));
 end
 
-% Removes "epsilon" variable which stands in for zeros
+% Removes "epsilon" variable, which stands in for zeros
 stable = limit(stable,epsilon,0,'right');
-RH = limit(RH,epsilon,0,'right');
+tabRH = limit(tabRH,epsilon,0,'right');
 assume(epsilon,'clear');
 
 if ~isa(p,'numeric')
 
+% Simplifies symbolic conditions for stability
 for k = 1:length(stable)
     if stable(k)==symtrue
         continue;
@@ -100,4 +90,6 @@ for k = 1:length(stable)
 end
 
 end
+
+% Reinstates previously defined assumptions
 assume(prevAssume);
