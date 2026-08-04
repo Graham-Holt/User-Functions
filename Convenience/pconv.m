@@ -7,12 +7,20 @@ function P = pconv(varargin)
 % 
 %% Syntax
 % pconv(p1,p2,...)
+% pconv(p)
 % P = pconv(___)
 % 
 %% Description
 % pconv(p1,p2,...) returns a row vector with the coefficients of the 
 % product of input polynomials numeric or symbolic vectors of coefficients 
 % using discrete, direct convolution
+%
+% pconv(p) allows for "p" to be a cell array containing polynomial
+% coefficient vectors
+
+if iscell(varargin{1})
+    varargin = reshape(varargin{1},1,[]);
+end
 
 P = reshape(varargin{1},1,[]);
 for k = 2:length(varargin)
