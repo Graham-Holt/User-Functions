@@ -22,15 +22,7 @@ if ~exist('tol','var')
 end
 
 % Evaluates roots to choosen level of detail
-n = length(m)-1;
-
-if license('test','symbolic_toolbox')
-    syms x; d0 = digits; digits(ceil(-log10(tol)));
-    r = vpasolve((x.^flip(0:n))*(m.')==0,x); r = double(r);
-    digits(d0);
-else
-    r = round(roots(m),ceil(-log10(tol)));
-end
+r = polyRoots(m,tol); n = length(r);
 
 % Determines derivative needed to accomodate repeated roots
 k = 1; d = zeros(1,n);
@@ -51,4 +43,4 @@ for k = 1:n
 end
 
 % Compute reduced polynomial
-p = polyInterp(r,d,f);
+p = polyInterp(r,f,d);

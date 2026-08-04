@@ -1,24 +1,24 @@
-function P = pconv(varargin)
-% pconv(p1,p2,...) performs vector convolutions for polynomial 
+function P = polyConv(varargin)
+% polyConv(p1,p2,...) performs vector convolutions for polynomial 
 % multiplication
 % 
-% Graham Holt, May 2026. Updated July 2026
+% Graham Holt, May 2026. Updated August 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% pconv(p1,p2,...)
-% pconv(p)
-% P = pconv(___)
+% polyConv(p1,p2,...)
+% polyConv(p)
+% P = polyConv(___)
 % 
 %% Description
-% pconv(p1,p2,...) returns a row vector with the coefficients of the 
+% polyConv(p1,p2,...) returns a row vector with the coefficients of the 
 % product of input polynomials numeric or symbolic vectors of coefficients 
 % using discrete, direct convolution
 %
-% pconv(p) allows for "p" to be a cell array containing polynomial
+% polyConv(p) allows for "p" to be a cell array containing polynomial
 % coefficient vectors
 
-if iscell(varargin{1})
+if iscell(varargin{1}) && nargin==1
     varargin = reshape(varargin{1},1,[]);
 end
 

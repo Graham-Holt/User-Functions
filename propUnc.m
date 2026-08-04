@@ -2,7 +2,7 @@ function [funcUnc, funcEvalX] = propUnc(func,xName,xValue,xUnc,constName,constVa
 % propUnc(func,xName,xValue,xUnc) evaluates the uncertainty and value of a 
 % function near a set of inputs with given uncertainties
 % 
-% Graham Holt, March 2025. Updated July 2026
+% Graham Holt, March 2025. Updated August 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
@@ -77,8 +77,7 @@ if strcmpi(method,'abs')
 
 % Puts symmetric uncertainies into asymmetric form
 if symmetric
-    collate = reshape([0; size(xValue,2)]+(1:size(xValue,2)),1,[]);
-    xUnc = [-xUnc xUnc]; xUnc = xUnc(:,collate);
+    xUnc = collate(-xUnc,xUnc);
 end
 
 for k = 1:(2^size(xValue,2))    
@@ -109,5 +108,34 @@ for k = 1:length(xName)
 end
 funcUnc = sqrt(sum(funcUnc.^2,2));
 funcUnc = reshape(funcUnc.*sign(xUnc(1,1,:)),size(funcUnc,1),[],1);
+
+end
+
+end
+
+function V = collate(varargin)
+% collate(v1,v2,...) collates same-size vectors.
+% 
+% Graham Holt, August 2026. Updated August 2026
+% Embry-Riddle Aeronautical University
+% 
+%% Syntax
+% collate(v1,v2,...)
+% collate(A1,A2,...)
+% V = collate(___)
+% 
+%% Description
+% collate(v1,v2,...) returns a row vector of the collated elements of the
+% input vectors
+%
+% collate(A1,A2,...) takes in arrays as input and returns a new array with
+% the columns collated
+
+n = length(varargin); m = size(varargin{1},2);
+for k = 1:m
+    for j = 1:n
+        V(:,n*(k-1) + j) = varargin{j}(:,k);
+    end
+end
 
 end
