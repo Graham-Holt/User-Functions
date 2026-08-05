@@ -5,19 +5,27 @@ function R = polyRoots(p,tol)
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
+% polyRoots(p)
 % polyRoots(p,tol)
 % R = polyRoots(___)
 % 
 %% Description
-% polyRoots(p,tol) returns a column vector with the roots of the input
+% polyRoots(p) returns a column vector with the roots of the input 
+% polynomial to default precision
+%
+% polyRoots(p,tol) returns a column vector with the roots of the input 
 % polynomial to the given degree of precision
+
+if ~exist('tol','var')
+    tol = 1e-6;
+end
 
 R = roots(p);
 
 if license('test','symbolic_toolbox')
 
 d0 = digits; digits(ceil(-log10(tol)));
-R = vpasolve(poly2sym(p)==0); R = double(R);
+R = vpasolve(poly2sym(p)==0,[],R); R = double(R);
 digits(d0);
 
 else

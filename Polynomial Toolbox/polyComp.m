@@ -23,9 +23,10 @@ end
 P = reshape(varargin{1},1,[]);
 for k = 2:length(varargin)
     n = length(P); m = length(varargin{k});
-    M = zeros(1,1 + (n-1)*(m-1));
+
+    Ptemp = zeros(1,1 + (n-1)*(m-1));
     for j = 1:(n-1)
-        M = M + [zeros(1, (j-1)*(m-1)), P(j)*polyConv(repmat(varargin(k),1,n-j))];
+        Ptemp = Ptemp + [zeros(1, (j-1)*(m-1)), P(j)*polyConv(repmat(varargin(k),1,n-j))];
     end
-    P = M + [zeros(1, (n-1)*(m-1)) P(n)];
+    P = Ptemp + [zeros(1, (n-1)*(m-1)) P(n)];
 end

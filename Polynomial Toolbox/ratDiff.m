@@ -20,5 +20,6 @@ N = n; D = d;
 for k = 1:m
     N = polyConv(polyDiffInt(N,1),D) - polyConv(N,polyDiffInt(D,1));
     D = polyConv(D,D);
-end
 
+    [N,D] = ratSimplify(N,D);
+end

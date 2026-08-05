@@ -22,10 +22,11 @@ if iscell(varargin{1}) && nargin==1
     varargin = reshape(varargin{1},1,[]);
 end
 
+% Steps through all inputs to convolve each vector in input
 P = reshape(varargin{1},1,[]);
 for k = 2:length(varargin)
-    % Steps through all inputs to convolve each vector in input
     n = length(P); m = length(varargin{k});
+
     M = [P.*reshape(varargin{k},[],1) zeros(m,m-1)];
 
     P = zeros(1,n+m-1);

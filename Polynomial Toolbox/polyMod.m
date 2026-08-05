@@ -17,6 +17,9 @@ function p = polyMod(p,m,tol)
 % this level of precision. It is recommended to use the default (1e-6) if 
 % you do not have Symbolic Math Toolbox.
 
+if length(m)>length(p)
+    return;
+end
 if ~exist('tol','var')
     tol = 1e-6;
 end
