@@ -1,4 +1,16 @@
 function Ainv = invFF(A,modulo)
+% invFF(A,modulo) computes the finite field matrix inverse
+% 
+% Graham Holt, Aug. 2026. Updated Aug. 2026
+% Embry-Riddle Aeronautical University
+% 
+%% Syntax
+% invFF(A,modulo)
+% Ainv = invFF(A,modulo)
+% 
+%% Description
+% invFF(A,modulo) returns a square matrix B such that B*A = A*B = I in the
+% finite field "modulo"
 
 if size(A,1)~=size(A,2)
     error('Matrix must be square.');

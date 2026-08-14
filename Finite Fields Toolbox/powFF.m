@@ -1,4 +1,15 @@
 function n = powFF(b,a,modulo)
+% powFF(b,a,modulo) computes powers in finite fields
+% 
+% Graham Holt, Aug. 2026. Updated Aug. 2026
+% Embry-Riddle Aeronautical University
+% 
+%% Syntax
+% powFF(b,a,modulo)
+% Ainv = powFF(b,a,modulo)
+% 
+%% Description
+% powFF(b,a,modulo) performs exponentiation in the finite field "modulo"
 
 b = int64(b);
 a = int64(a);

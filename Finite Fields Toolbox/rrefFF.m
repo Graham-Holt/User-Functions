@@ -1,4 +1,17 @@
 function Arref = rrefFF(A,modulo)
+% rrefFF(A,modulo) computes the row-reduced echelon form on matrices in 
+% finite fields
+% 
+% Graham Holt, Aug. 2026. Updated Aug. 2026
+% Embry-Riddle Aeronautical University
+% 
+%% Syntax
+% rrefFF(A,modulo)
+% Arref = rrefFF(A,modulo)
+% 
+%% Description
+% rrefFF(A,modulo) performs RREF reduction on the matrix "A" in the finite
+% field "modulo"
 
 Arref = mod(A,modulo);
 [n,m] = size(A);
