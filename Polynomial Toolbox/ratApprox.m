@@ -1,0 +1,25 @@
+function [N,D] = ratApprox(func,interval,order)
+
+midInt = (interval(2) + interval(1))/2;
+radiusInt = (interval(2) - interval(1))/2;
+
+order = [order zeros(1,2-length(order))];
+numPoints = order(1) + order(2) + 1;
+
+if numPoints==1
+    x_est = midInt;
+else
+    x_est = midInt + radiusInt*cos((0:(numPoints-1))*pi/(numPoints-1));
+end
+
+for k = 1:length(x_est)
+    P(k,:) = [x_est(k).^(order(1):-1:0) -func(x_est(k))*x_est(k).^(order(2):-1:0)];
+end
+
+coeff_est = null(P)'; I = find(abs(coeff_est)>1e-12,1,'last');
+
+N = coeff_est(1:(order(1)+1))/coeff_est(I);
+N = N(find(abs(N)>1e-12,1):end);
+
+D = coeff_est((end-order(2)):end)/coeff_est(I);
+D = D(find(abs(D)>1e-12,1):end);

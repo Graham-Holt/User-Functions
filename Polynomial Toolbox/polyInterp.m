@@ -1,14 +1,15 @@
-function p = polyInterp(x,f,d)
+function [p,V] = polyInterp(x,f,d)
 % polyInterp(x,f) generates the simplest polynomial function defined by its 
 % derivatives at various points
 % 
-% Graham Holt, April 2026. Updated July 2026
+% Graham Holt, April 2026. Updated August 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
 % polyInterp(x,f)
 % polyInterp(___,d)
 % p = polyInterp(___)
+% [p,V] = polyInterp(___)
 % 
 %% Description
 % polyInterp(x,f) returns the simplest polynomial which evaluates to "f" at
@@ -16,6 +17,9 @@ function p = polyInterp(x,f,d)
 %
 % polyInterp(___,d) considers the order "d" derivative of the polynomial to
 % equal "f" at "x".
+% 
+% [p,V] = polyInterp(___) returns the Vandermonde matrix used to compute
+% the polynomial
 
 % Ensures that there exists an interpolating solution (no least-squares)
 if nargin<3
@@ -46,7 +50,7 @@ for k = 1:n
         P(k,:) = P(k,:).*circshift(del,1-j);
     end
 end
-Paug = rref([P f]); r = rank(P);
+V = P; Paug = rref([P f]); r = rank(P);
 
 if any(Paug((r+1):n,n+1)~=0)
     error(['(',num2str(sum(Paug((r+1):n,n+1)~=0)),') conditions are incompatible.']);
