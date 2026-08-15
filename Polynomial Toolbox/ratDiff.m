@@ -18,8 +18,8 @@ end
 
 N = n; D = d;
 for k = 1:m
-    N = polyConv(polyDiffInt(N,1),D) - polyConv(N,polyDiffInt(D,1));
-    D = polyConv(D,D);
+    N = polyMult(polyDiffInt(N,1),D) - polyMult(N,polyDiffInt(D,1));
+    D = polyMult(D,D);
 
     [N,D] = ratSimplify(N,D);
 end

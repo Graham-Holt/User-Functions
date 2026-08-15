@@ -29,18 +29,18 @@ for k = 2:(length(varargin)/2)
     
     Ntemp = zeros(1,1+(n-1)*(p-1));
     for j = 1:n
-        Ntemp = Ntemp + [zeros(1,(j-1)*(p-q)), N(j)*polyConv([repmat(varargin(2*k-1),1,n-j),repmat(varargin(2*k),1,j-1)])];
+        Ntemp = Ntemp + [zeros(1,(j-1)*(p-q)), N(j)*polyMult([repmat(varargin(2*k-1),1,n-j),repmat(varargin(2*k),1,j-1)])];
     end
     N = Ntemp;
     Dtemp = zeros(1,1+(m-1)*(q-1));
     for j = 1:m
-        Dtemp = Dtemp + [zeros(1,(j-1)*(p-q)), D(j)*polyConv([repmat(varargin(2*k-1),1,m-j),repmat(varargin(2*k),1,j-1)])];
+        Dtemp = Dtemp + [zeros(1,(j-1)*(p-q)), D(j)*polyMult([repmat(varargin(2*k-1),1,m-j),repmat(varargin(2*k),1,j-1)])];
     end
     D = Dtemp;
 
     if n>m
-        D = polyConv([{D},repmat(varargin{2*k},1,n-m)]);
+        D = polyMult([{D},repmat(varargin{2*k},1,n-m)]);
     elseif n<m
-        N = polyConv([{N},repmat(varargin{2*k},1,m-n)]);
+        N = polyMult([{N},repmat(varargin{2*k},1,m-n)]);
     end
 end

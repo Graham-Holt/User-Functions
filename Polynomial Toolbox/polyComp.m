@@ -26,7 +26,7 @@ for k = 2:length(varargin)
 
     Ptemp = zeros(1,1 + (n-1)*(m-1));
     for j = 1:(n-1)
-        Ptemp = Ptemp + [zeros(1, (j-1)*(m-1)), P(j)*polyConv(repmat(varargin(k),1,n-j))];
+        Ptemp = Ptemp + [zeros(1, (j-1)*(m-1)), P(j)*polyMult(repmat(varargin(k),1,n-j))];
     end
     P = Ptemp + [zeros(1, (n-1)*(m-1)) P(n)];
 end
