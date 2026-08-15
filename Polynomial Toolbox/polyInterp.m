@@ -18,8 +18,8 @@ function [p,V] = polyInterp(x,f,d)
 % polyInterp(___,d) considers the order "d" derivative of the polynomial to
 % equal "f" at "x".
 % 
-% [p,V] = polyInterp(___) returns the Vandermonde matrix used to compute
-% the polynomial
+% [p,V] = polyInterp(___) returns the "generalized" Vandermonde matrix used 
+% to compute the polynomial
 
 % Ensures that there exists an interpolating solution (no least-squares)
 if nargin<3
