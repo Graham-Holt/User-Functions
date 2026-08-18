@@ -34,32 +34,22 @@ end
 x = reshape(x,[],1); f = reshape(f,[],1);
 
 % Initializes Vandermonde matrix
-n = length(x); P = zeros(n);
+n = length(x); V = zeros(n);
 if ~(isa(x,'numeric')&isa(f,'numeric'))
-    P = sym(P);
+    V = sym(V);
 end
 
 % Constructs matrix and augments with function values
-del = n - (1:n);
-for k = 1:n
-    % Create shifted Vandemonde matrix
-    P(k,:) = [x(k).^del((1+d(k)):n) zeros(1,d(k))];
+V = vander2(x,[],d); Vaug = rref([V f]); r = rank(V);
 
-    % Multiply coefficients using power rule
-    for j = 1:d(k)
-        P(k,:) = P(k,:).*circshift(del,1-j);
-    end
-end
-V = P; Paug = rref([P f]); r = rank(P);
-
-if any(Paug((r+1):n,n+1)~=0)
-    error(['(',num2str(sum(Paug((r+1):n,n+1)~=0)),') conditions are incompatible.']);
+if any(Vaug((r+1):n,n+1)~=0)
+    error(['(',num2str(sum(Vaug((r+1):n,n+1)~=0)),') conditions are incompatible.']);
 end
 
 % Finds minimum norm solution
-P = Paug(1:r,1:n);
-f = Paug(1:r,n+1);
-p = P.'/(P*P.')*f;
+V = Vaug(1:r,1:n);
+f = Vaug(1:r,n+1);
+p = V.'/(V*V.')*f;
 
 % Reduces polynomial to minimal degree
 p = p(find(p~=0,1):end).';
