@@ -17,22 +17,20 @@ function V = vander2(v,nCols,d)
 % vander2(___,d) applies the given order of derivative to the Vandermonde
 % matrix.
 
-if nargin<2
+if nargin < 2
     nCols = length(v);
 end
 if isempty(nCols)
     nCols = length(v);
 end
-if nargin<3
-    d = zeros(1,nCols);
+if nargin < 3
+    d = zeros(1,length(v));
 end
 
 del = nCols - (1:nCols);
-for k = 1:nCols
-    % Create shifted Vandemonde matrix
+for k = 1:length(v)
     V(k,:) = [v(k).^del((1+d(k)):nCols) zeros(1,d(k))];
 
-    % Multiply coefficients using power rule
     for j = 1:d(k)
         V(k,:) = V(k,:).*circshift(del,1-j);
     end
