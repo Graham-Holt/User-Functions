@@ -1,15 +1,15 @@
-function n = powFF(b,a,modulo)
-% powFF(b,a,modulo) computes powers in finite fields
+function n = expFF(b,a,modulo)
+% expFF(b,a,modulo) computes exponentiation in finite fields
 % 
 % Graham Holt, Aug. 2026. Updated Aug. 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% powFF(b,a,modulo)
-% Ainv = powFF(b,a,modulo)
+% expFF(b,a,modulo)
+% n = expFF(b,a,modulo)
 % 
 %% Description
-% powFF(b,a,modulo) performs exponentiation in the finite field "modulo"
+% expFF(b,a,modulo) performs exponentiation in the finite field "modulo"
 
 b = int64(b);
 a = int64(a);
@@ -27,9 +27,9 @@ if ~isinteger(a)
     warning('Rational approximation of exponent used.');
 
     [aN,aD] = rat(a);
-    b = powFF(b,int64(aN),modulo);
+    b = expFF(b,int64(aN),modulo);
 
-    n = powFF(0:(modulo-1),int64(aD),modulo);
+    n = expFF(0:(modulo-1),int64(aD),modulo);
     I = find(n==b);
 
     if isempty(I)
