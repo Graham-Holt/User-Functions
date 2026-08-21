@@ -1,21 +1,21 @@
-function V = vanderd(v,nCols,d)
-% vanderd(v) computes Vandermonde matrices.
+function V = vanderr(v,nCols,d)
+% vanderr(v) computes polynomial interpolation matrices.
 % 
 % Graham Holt, August 2026. Updated August 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% vanderd(v)
-% vanderd(v,nCols)
-% V = vanderd(___)
+% vanderr(v)
+% vanderr(v,nCols)
+% V = vanderr(___)
 % 
 %% Description
-% vanderd(v) returns a square Vandermonde matrix with the values in "v"
+% vanderr(v) returns a square Vandermonde matrix with the values in "v"
 %
-% vanderd(v,nCols) returns a rectangular matrix with "nCol" columnds
+% vanderr(v,nCols) returns a rectangular matrix with "nCol" columns
 % 
-% vanderd(___,d) applies the given order of derivative to the Vandermonde
-% matrix.
+% vanderr(___,d) applies the given order of derivative to the corresponding
+% row of the rectangular Vandermonde matrix.
 
 if nargin < 2
     nCols = length(v);

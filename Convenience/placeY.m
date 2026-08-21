@@ -1,4 +1,16 @@
 function K = placeY(A,B,C,D,eig)
+% placeY(A,B,C,D,eig) places poles for output feedback design.
+% 
+% Graham Holt, August 2026. Updated August 2026
+% Embry-Riddle Aeronautical University
+% 
+%% Syntax
+% placeY(A,B,C,D,eig)
+% K = placeY(___)
+% 
+%% Description
+% placeY(A,B,C,D,eig) numerically solves for a gain matrix to place closed-
+% loop poles in the provided linearized system.
 
 [n,m] = size(B);
 [p,~] = size(C);
@@ -21,7 +33,7 @@ S = solve(charpoly(A - B*K/(eye(p+s) + D*K)*C) == poly(eig), symvar(K));
 
 for k = 1:(m+s)
     for j = 1:(p+s)
-        K(j,k) = S.("k"+num2str(k)+num2str(j));
+        K(k,j) = S.("k"+num2str(k)+num2str(j));
     end
 end
 K = double(K);

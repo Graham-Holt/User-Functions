@@ -1,7 +1,7 @@
 function Ainv = invFF(A,modulo)
 % invFF(A,modulo) computes the finite field matrix inverse
 % 
-% Graham Holt, Aug. 2026. Updated Aug. 2026
+% Graham Holt, August 2026. Updated August 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax

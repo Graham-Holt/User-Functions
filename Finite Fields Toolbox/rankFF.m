@@ -1,7 +1,7 @@
 function [r,isFullRank] = rankFF(A,modulo)
 % rankFF(A,modulo) computes matrix rank in finite fields
 % 
-% Graham Holt, Aug. 2026. Updated Aug. 2026
+% Graham Holt, August 2026. Updated August 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax

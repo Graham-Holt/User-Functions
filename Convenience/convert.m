@@ -2,7 +2,7 @@ function x2 = convert(x1,u1,u2,abs)
 % convert(x1,u1,u2) converts the input from the first set of units to the
 % second
 % 
-% Graham Holt, Feb. 2024. Updated May 2026
+% Graham Holt, February 2024. Updated May 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax

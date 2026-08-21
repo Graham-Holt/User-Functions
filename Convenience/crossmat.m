@@ -1,7 +1,7 @@
 function A = crossmat(a)
 % crossmat(a) converts between vectors and skew-symmetric matrices
 % 
-% Graham Holt, Mar. 2026. Updated May 2026
+% Graham Holt, March 2026. Updated May 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax

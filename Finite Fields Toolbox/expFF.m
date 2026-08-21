@@ -1,7 +1,7 @@
 function n = expFF(b,a,modulo)
 % expFF(b,a,modulo) computes exponentiation in finite fields
 % 
-% Graham Holt, Aug. 2026. Updated Aug. 2026
+% Graham Holt, August 2026. Updated August 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax

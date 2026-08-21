@@ -1,7 +1,7 @@
 function a = logFF(b,n,modulo)
 % logFF(b,n,modulo) computes logarithms in finite fields
 % 
-% Graham Holt, Aug. 2026. Updated Aug. 2026
+% Graham Holt, August 2026. Updated August 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
