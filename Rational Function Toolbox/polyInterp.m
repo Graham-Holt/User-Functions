@@ -1,4 +1,4 @@
-function [p,V] = polyInterp(x,f,d)
+function p = polyInterp(x,f,d)
 % polyInterp(x,f) generates the simplest polynomial function defined by its 
 % derivatives at various points
 % 
@@ -17,9 +17,6 @@ function [p,V] = polyInterp(x,f,d)
 %
 % polyInterp(___,d) considers the order "d" derivative of the polynomial to
 % equal "f" at "x".
-% 
-% [p,V] = polyInterp(___) returns the "generalized" Vandermonde matrix used 
-% to compute the polynomial
 
 % Ensures that there exists an interpolating solution (no least-squares)
 if nargin<3
@@ -40,7 +37,7 @@ if ~(isa(x,'numeric')&isa(f,'numeric'))
 end
 
 % Constructs matrix and augments with function values
-V = vander2(x,[],d); Vaug = rref([V f]); r = rank(V);
+V = vanderd(x,[],d); Vaug = rref([V f]); r = rank(V);
 
 if any(Vaug((r+1):n,n+1)~=0)
     error(['(',num2str(sum(Vaug((r+1):n,n+1)~=0)),') conditions are incompatible.']);

@@ -1,24 +1,24 @@
-function y = round2(varargin)
-% round2(x,roundTo) rounds to the nearest decimal
+function y = roundd(varargin)
+% roundd(x,roundTo) rounds to the nearest decimal
 % 
 % Graham Holt, August 2026. Updated August 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% round2(x,roundTo)
-% round2(___,type)
-% round2(___,dir)
+% roundd(x,roundTo)
+% roundd(___,type)
+% roundd(___,dir)
 % y = round2(___)
 % 
 %% Description
-% round2(x,roundTo) rounds the input to the specified number of digits
+% roundd(x,roundTo) rounds the input to the specified number of digits
 %
-% round2(___,type) distinguishes what's being rounded to:
+% roundd(___,type) distinguishes what's being rounded to:
 %   0 - round to number of digits after the decimal (default)
 %   1 - round to number of significant figures
 %   2 - round to adjacent multiple of "roundTo"
 %
-% round2(___,dir) specifies which direction to round as a number 
+% roundd(___,dir) specifies which direction to round as a number 
 % (Inf -> ceil, -Inf -> floor, 0 -> fix, etc.)
 
 if ~isnumeric([varargin{:}])

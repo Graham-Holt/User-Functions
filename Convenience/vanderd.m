@@ -1,20 +1,20 @@
-function V = vander2(v,nCols,d)
-% vander2(v) computes Vandermonde matrices.
+function V = vanderd(v,nCols,d)
+% vanderd(v) computes Vandermonde matrices.
 % 
 % Graham Holt, August 2026. Updated August 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% vander2(v)
-% vander2(v,nCols)
-% V = vander2(___)
+% vanderd(v)
+% vanderd(v,nCols)
+% V = vanderd(___)
 % 
 %% Description
-% vander2(v) returns a square Vandermonde matrix with the values in "v"
+% vanderd(v) returns a square Vandermonde matrix with the values in "v"
 %
-% vander2(v,nCols) returns a rectangular matrix with "nCol" columnds
+% vanderd(v,nCols) returns a rectangular matrix with "nCol" columnds
 % 
-% vander2(___,d) applies the given order of derivative to the Vandermonde
+% vanderd(___,d) applies the given order of derivative to the Vandermonde
 % matrix.
 
 if nargin < 2
