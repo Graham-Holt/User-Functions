@@ -88,7 +88,7 @@ case 2
 case 3
     varargout = {K,L,Kr};
 otherwise
-    error('Invalid number of outputs.');
+    error('Too many output arguments.');
 end
 
 end
