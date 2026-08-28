@@ -55,16 +55,18 @@ function [funcUnc, funcEvalX] = propUnc(func,xName,xValue,xUnc,constName,constVa
 % Converts strings into usable symbolic objects
 xName = str2sym(xName); func = str2sym(func);
 
-% Pre-inserts constants where possible
-if exist('constName','var') && exist('constValue','var')
+% Selects defaults and pre-inserts constants where possible
+symmetric = size(xValue,2)==size(xUnc,2);
+if nargin < 6
+    constName = [];
+    constValue = [];
+    method = 'rms';
+elseif nargin < 7
+    method = 'rms';
+end
+if ~(isempty(constName) || isempty(constValue))
     constName = str2sym(constName);
     func = subs(func,constName,constValue);
-end
-
-% Selects default method
-symmetric = size(xValue,2)==size(xUnc,2);
-if ~exist('method','var')
-    method = 'rms';
 end
 
 % Evaluates function at the given inputs
