@@ -28,7 +28,7 @@ else
     x_est = midInt + radiusInt*cos((0:(numPoints-1))*pi/(numPoints-1)).';
 end
 
-P = [vanderr(x_est,order(1)+1), -func(x_est).*vanderr(x_est,order(2)+1)];
+P = [cvander(x_est,order(1)+1), -func(x_est).*cvander(x_est,order(2)+1)];
 coeff_est = null(P)'; I = find(abs(coeff_est)>1e-12,1,'last');
 
 N = coeff_est(1:(order(1)+1))/coeff_est(I);

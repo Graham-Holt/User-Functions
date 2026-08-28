@@ -1,20 +1,20 @@
-function V = vanderr(v,nCols,d)
-% vanderr(v) computes polynomial interpolation matrices.
+function V = cvander(v,nCols,d)
+% cvander(v) computes confluent Vandermonde matrices.
 % 
 % Graham Holt, August 2026. Updated August 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% vanderr(v)
-% vanderr(v,nCols)
-% V = vanderr(___)
+% cvander(v)
+% cvander(v,nCols)
+% V = cvander(___)
 % 
 %% Description
-% vanderr(v) returns a square Vandermonde matrix with the values in "v"
+% cvander(v) returns a square Vandermonde matrix with the values in "v"
 %
-% vanderr(v,nCols) returns a rectangular matrix with "nCol" columns
+% cvander(v,nCols) returns a rectangular matrix with "nCol" columns
 % 
-% vanderr(___,d) applies the given order of derivative to the corresponding
+% cvander(___,d) applies the given order of derivative to the corresponding
 % row of the rectangular Vandermonde matrix.
 
 if nargin < 2
@@ -34,4 +34,6 @@ for k = 1:length(v)
     for j = 1:d(k)
         V(k,:) = V(k,:).*circshift(del,1-j);
     end
+end
+
 end
