@@ -24,9 +24,9 @@ R = roots(p);
 
 if license('test','symbolic_toolbox')
 
-d0 = digits; digits(ceil(-log10(tol)));
-R = vpasolve(poly2sym(p)==0,[],R); R = double(R);
-digits(d0);
+d0 = digits; digits(ceil(-log10(tol))); syms x;
+R = vpasolve(poly2sym(p,x)==0,x);
+R = double(R); digits(d0);
 
 else
 

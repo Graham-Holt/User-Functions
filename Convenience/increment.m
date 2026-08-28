@@ -37,6 +37,7 @@ if isscalar(inc)
 end
 
 if all(v == max)
+    v = min;
     return;
 end
 

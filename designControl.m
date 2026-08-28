@@ -56,7 +56,7 @@ case 'y'
     K = placeY(A,B,C,D,eig);
     L = [];
 
-    Kinf = K(1:(n-p+1),1:(n-m+1)) - K(1:(n-p+1),(n-m+2):end)/K((n-p+2):end,(n-m+2):end)*K((n-p+2):end,1:(n-m+1));
+    Kinf = K(1:m,1:p) - K(1:m,(p+1):end)/K((m+1):end,(p+1):end)*K((m+1):end,1:p);
 otherwise
     error('Improper method chosen.');
 end
