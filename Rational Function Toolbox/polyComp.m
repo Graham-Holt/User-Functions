@@ -1,5 +1,5 @@
 function P = polyComp(varargin)
-% polyComp(p1,p2,...) composes polynomials in the order provided.
+% polyComp(p1,p2,...) composes polynomials in the order provided
 % 
 % Graham Holt, July 2026. Updated July 2026
 % Embry-Riddle Aeronautical University

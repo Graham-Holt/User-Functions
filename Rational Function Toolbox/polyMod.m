@@ -1,6 +1,6 @@
 function p = polyMod(p,m,tol)
 % polyMod(p,m) finds a reduction of the given polynomial with respect to a
-% polynomial modulus.
+% polynomial modulus
 % 
 % Graham Holt, July 2026. Updated July 2026
 % Embry-Riddle Aeronautical University

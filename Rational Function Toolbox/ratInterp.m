@@ -1,51 +1,52 @@
-function p = polyInterp(x,f,d)
-% polyInterp(x,f) generates the simplest polynomial function defined by its 
-% derivatives at various points
+function [N,D] = ratInterp(x,f,asym)
+% ratInterp(x,f,asym) generates the simplest interpolating rational 
+% function with given asymptotic degree
 % 
-% Graham Holt, April 2026. Updated August 2026
+% Graham Holt, September 2026. Updated September 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% polyInterp(x,f)
-% polyInterp(___,d)
-% p = polyInterp(___)
+% ratInterp(x,f)
+% ratInterp(___,asym)
+% p = ratInterp(___)
 % 
 %% Description
 % polyInterp(x,f) returns the simplest polynomial which evaluates to "f" at
 % "x"
 %
-% polyInterp(___,d) considers the order "d" derivative of the polynomial to
-% equal "f" at "x".
+% polyInterp(___,asym) considers the degree of the asymptote for the
+% rational function.
 
 % Ensures that there exists an interpolating solution (no least-squares)
 if nargin<3
-    d = zeros(length(x),1);
+    asym = length(x) - 1;
 end
-if ~(length(d)==length(x) && length(f)==length(x))
+if ~(length(f)==length(x))
     error('Vetcor inputs must have the same length');
 end
-if any(d>=length(d)) || any(d~=round(d))
-    error('Order of derivative must be an integer less than or equal to the order of polynomial.');
+if asym >= length(x) || asym~=round(asym) || mod(asym,2)~=mod(length(x)-1,2)
+    error('Degree of asymptote must be an integer less than or equal to the order of rational and of the same parity.');
 end
 x = reshape(x,[],1); 
 f = reshape(f,[],1);
-n = length(x);
+n = 0.5*(length(x) + asym - 1);
+m = 0.5*(length(x) - asym - 1);
 
 % Constructs matrix and augments with function values
-V = cvander(x,[],d); Vaug = rref([V f]); r = rank(V);
+V = [cvander(x,n+1), -f.*cvander(x,m+1)];
 
-if any(Vaug((r+1):n,n+1)~=0)
-    numIncompatible = double(sum(Vaug((r+1):n,n+1)~=0));
-    error(['(',num2str(numIncompatible),') conditions are incompatible.']);
+% Finds minimum norm solution and simplifies coefficients
+coeff = null(V).'; I = find(abs(coeff)>1e-12,1,'last'); 
+
+if all(coeff((end-m):end) <= 1e-12)
+    error('Conditions are incompatible.');
 end
 
-% Finds minimum norm solution
-V = Vaug(1:r,1:n);
-f = Vaug(1:r,n+1);
-p = V.'/(V*V.')*f;
+N = coeff(1:(n+1))/coeff(I);
+N = N(find(abs(N)>1e-12,1):end);
 
-% Reduces polynomial to minimal degree
-p = p(find(p~=0,1):end).';
+D = coeff((end-m):end)/coeff(I);
+D = D(find(abs(D)>1e-12,1):end);
 
 end
 

@@ -1,7 +1,7 @@
 function [N,D] = ratApprox(func,interval,order)
-% ratApprox(x,f) generates rational approximations using Chebeshev nodes.
+% ratApprox(x,f) generates rational approximations using Chebeshev nodes
 % 
-% Graham Holt, August 2026. Updated August 2026
+% Graham Holt, August 2026. Updated September 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
@@ -28,11 +28,4 @@ else
     x_est = midInt + radiusInt*cos((0:(numPoints-1))*pi/(numPoints-1)).';
 end
 
-P = [cvander(x_est,order(1)+1), -func(x_est).*cvander(x_est,order(2)+1)];
-coeff_est = null(P)'; I = find(abs(coeff_est)>1e-12,1,'last');
-
-N = coeff_est(1:(order(1)+1))/coeff_est(I);
-N = N(find(abs(N)>1e-12,1):end);
-
-D = coeff_est((end-order(2)):end)/coeff_est(I);
-D = D(find(abs(D)>1e-12,1):end);
+[N,D] = ratInterp(x_est,func(x_est),order(1)-order(2));

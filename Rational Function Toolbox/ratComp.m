@@ -1,6 +1,6 @@
 function [N,D] = ratComp(varargin)
 % ratComp(n1,d1,n2,d2,...) composes rational function in the order 
-% provided.
+% provided
 % 
 % Graham Holt, August 2026. Updated August 2026
 % Embry-Riddle Aeronautical University
