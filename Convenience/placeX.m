@@ -1,15 +1,15 @@
 function K = placeX(A,B,eig)
 % placeX(A,B,eig) places poles for state feedback design.
 % 
-% Graham Holt, August 2026. Updated August 2026
+% Graham Holt, August 2026. Updated September 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% placeY(A,B,eig)
-% K = placeY(___)
+% placeX(A,B,eig)
+% K = placeX(___)
 % 
 %% Description
-% placeY(A,B,eig) numerically solves for a gain matrix to place closed-loop 
+% placeX(A,B,eig) numerically solves for a gain matrix to place closed-loop 
 % poles in the provided linearized system.
 
 [n,m] = size(B);
@@ -25,7 +25,9 @@ S = solve(charpoly(A - B*K) == poly(eig), symvar(K));
 
 for k = 1:m
     for j = 1:n
-        K(k,j) = S.("k"+num2str(k)+num2str(j));
+        K(k,j,:) = reshape(S.("k"+num2str(k)+num2str(j)),1,1,[]);
     end
 end
 K = double(K);
+[~,I] = mink(reshape(pagenorm(K),1,[]),1);
+K = K(:,:,I);

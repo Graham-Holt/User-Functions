@@ -2,7 +2,7 @@ function varargout = designControl(varargin)
 % designControl(A,B,C,D,eig,method) computes gain matrices for linearized
 % dynamical systems
 % 
-% Graham Holt, August 2026. Updated August 2026
+% Graham Holt, August 2026. Updated September 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
@@ -37,7 +37,7 @@ C = varargin{3};
 D = varargin{4};
 
 [n,m] = size(B);
-p = size(C,1);
+[p,~] = size(C);
 
 eig = varargin{5};
 method = lower(char(varargin{6}));
@@ -96,15 +96,15 @@ end
 function K = placeX(A,B,eig)
 % placeX(A,B,eig) places poles for state feedback design.
 % 
-% Graham Holt, August 2026. Updated August 2026
+% Graham Holt, August 2026. Updated September 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% placeY(A,B,eig)
-% K = placeY(___)
+% placeX(A,B,eig)
+% K = placeX(___)
 % 
 %% Description
-% placeY(A,B,eig) numerically solves for a gain matrix to place closed-loop 
+% placeX(A,B,eig) numerically solves for a gain matrix to place closed-loop 
 % poles in the provided linearized system.
 
 [n,m] = size(B);
@@ -120,17 +120,19 @@ S = solve(charpoly(A - B*K) == poly(eig), symvar(K));
 
 for k = 1:m
     for j = 1:n
-        K(k,j) = S.("k"+num2str(k)+num2str(j));
+        K(k,j,:) = reshape(S.("k"+num2str(k)+num2str(j)),1,1,[]);
     end
 end
 K = double(K);
+[~,I] = mink(reshape(pagenorm(K),1,[]),1);
+K = K(:,:,I);
 
 end
 
 function K = placeY(A,B,C,D,eig)
 % placeY(A,B,C,D,eig) places poles for output feedback design.
 % 
-% Graham Holt, August 2026. Updated August 2026
+% Graham Holt, August 2026. Updated September 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
@@ -143,13 +145,11 @@ function K = placeY(A,B,C,D,eig)
 
 [n,m] = size(B);
 [p,~] = size(C);
-s = length(eig) - n;
-if s < 0
+if length(eig) < 2*n-m-p+1
     error('Too few eigenvalues to place.');
-elseif s > n-m-p+1
-    s = n-m-p+1;
-    eig = eig(1:(n+s));
 end
+s = n-m-p+1;
+eig = eig(1:(n+s));
 
 A = blkdiag(A,zeros(s));
 B = blkdiag(B,eye(s));
@@ -162,9 +162,11 @@ S = solve(charpoly(A - B*K/(eye(p+s) + D*K)*C) == poly(eig), symvar(K));
 
 for k = 1:(m+s)
     for j = 1:(p+s)
-        K(k,j) = S.("k"+num2str(k)+num2str(j));
+        K(k,j,:) = reshape(S.("k"+num2str(k)+num2str(j)),1,1,[]);
     end
 end
 K = double(K);
+[~,I] = mink(reshape(pagenorm(K),1,[]),1);
+K = K(:,:,I);
 
 end
