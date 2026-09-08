@@ -30,3 +30,8 @@ for k = 2:length(varargin)
     end
     P = Ptemp + [zeros(1, (n-1)*(m-1)) P(n)];
 end
+
+P = P(find(P~=0,1):end);
+if isempty(P)
+    P = 0;
+end

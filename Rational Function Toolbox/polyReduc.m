@@ -16,7 +16,7 @@ function p = polyReduc(p,r,tol)
 % polyReduc(___,tol) tunes the tolerance for an input root to be considered
 % a root of the given polynomial
 
-if ~exists('tol','var')
+if ~exist('tol','var')
     tol = 1e-6;
 end
 
@@ -30,4 +30,9 @@ for k = 1:m
        P(j) = P(j) + P(j-1)*r(k);
     end
     p = P(1:(end-1));
+end
+
+p = p(find(p~=0,1):end);
+if isempty(p)
+    p = 0;
 end

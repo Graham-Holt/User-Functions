@@ -48,6 +48,14 @@ N = N(find(abs(N)>1e-12,1):end);
 D = coeff((end-m):end)/coeff(I);
 D = D(find(abs(D)>1e-12,1):end);
 
+if isempty(N) || isempty(D)
+    N = 0; D = 0;
+elseif isempty(N)
+    N = 0; D = 1;
+elseif isempty(D)
+    N = 1; D = 0;
+end
+
 end
 
 function V = cvander(v,nCols,d)

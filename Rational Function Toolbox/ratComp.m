@@ -44,3 +44,13 @@ for k = 2:(length(varargin)/2)
         N = polyMult([{N},repmat(varargin{2*k},1,m-n)]);
     end
 end
+
+N = N(find(N~=0,1):end);
+D = D(find(D~=0,1):end);
+if isempty(N) || isempty(D)
+    N = 0; D = 0;
+elseif isempty(N)
+    N = 0; D = 1;
+elseif isempty(D)
+    N = 1; D = 0;
+end

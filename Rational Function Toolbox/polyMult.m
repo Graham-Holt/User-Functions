@@ -25,7 +25,7 @@ end
 % Steps through all inputs to convolve each vector in input
 P = reshape(varargin{1},1,[]);
 for k = 2:length(varargin)
-    n = length(P); m = length(varargin{k});
+    n = length(P); m = length(varargin{k}); 
 
     M = [P.*reshape(varargin{k},[],1) zeros(m,m-1)];
 
@@ -33,4 +33,9 @@ for k = 2:length(varargin)
     for j = 1:m
         P = P + circshift(M(j,:),j-1);
     end
+end
+
+P = P(find(P~=0,1):end);
+if isempty(P)
+    P = 0;
 end

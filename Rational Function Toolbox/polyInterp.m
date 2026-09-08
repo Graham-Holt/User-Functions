@@ -46,6 +46,9 @@ p = V.'/(V*V.')*f;
 
 % Reduces polynomial to minimal degree
 p = p(find(p~=0,1):end).';
+if isempty(p)
+    p = 0;
+end
 
 end
 

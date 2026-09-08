@@ -5,7 +5,7 @@ function P = polyDiffInt(p,d,x0,p0)
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% polyDiffInt(p,m)
+% polyDiffInt(p,d)
 % polyDiffInt(___,x0,p0)
 % P = polyDiffInt(___)
 % 
@@ -17,7 +17,10 @@ function P = polyDiffInt(p,d,x0,p0)
 % case with increasing derivative order (p0 = [p(x0) p'(x0) p''(x0) ...])
 
 % Ensures that inputs are valid and derivative is non-trivial
-if nargin<3 && d<0
+if nargin<2
+    d = 1;
+end
+if nargin<3 || d<0
     x0 = zeros(1,-d);
     p0 = zeros(1,-d);
 end
@@ -43,4 +46,9 @@ else
         int = 1./((n+k-1):-1:1);
         P = [P.*int, p0(1-d-k)-polyval([P.*int,0],x0(1-d-k))];
     end
+end
+
+P = P(find(P~=0,1):end);
+if isempty(P)
+    P = 0;
 end
