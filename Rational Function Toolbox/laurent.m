@@ -49,8 +49,9 @@ for k = 1:length(z0)
     
     denomRoots = polyRoots(D); potentialRadii = abs(denomRoots - z0(k));
     potentialRadii = potentialRadii(potentialRadii > 1e-12);
-    radiusConv(k,:) = min(potentialRadii); 
-    if isempty(radiusConv(k)) 
-        radiusConv(k) = Inf;
+    if isempty(potentialRadii) 
+        radiusConv(k,:) = Inf;
+    else
+        radiusConv(k,:) = min(potentialRadii);
     end
 end
