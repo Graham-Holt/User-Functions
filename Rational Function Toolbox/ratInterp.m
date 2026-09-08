@@ -18,7 +18,7 @@ function [N,D] = ratInterp(x,f,asym)
 % rational function.
 
 % Ensures that there exists an interpolating solution (no least-squares)
-if nargin<3
+if nargin < 3
     asym = length(x) - 1;
 end
 if ~(length(f)==length(x))
@@ -27,6 +27,9 @@ end
 if asym >= length(x) || asym~=round(asym) || mod(asym,2)~=mod(length(x)-1,2)
     error('Degree of asymptote must be an integer less than or equal to the order of rational and of the same parity.');
 end
+if any(isinf(x)) && asym > 0
+    error('Asymptote will not converge to any value.');
+end
 x = reshape(x,[],1); 
 f = reshape(f,[],1);
 n = 0.5*(length(x) + asym - 1);
@@ -34,9 +37,11 @@ m = 0.5*(length(x) - asym - 1);
 
 % Constructs matrix and augments with function values
 V = [cvander(x,n+1), -f.*cvander(x,m+1)];
+V(isinf(x),:) = [1 zeros(sum(isinf(x)),n) -f(isinf(x)) zeros(sum(isinf(x)),m)];
 
 % Finds minimum norm solution and simplifies coefficients
-coeff = null(V).'; I = find(abs(coeff)>1e-12,1,'last'); 
+coeff = null(V).'; 
+I = n + 1 + find(abs(coeff((end-m):end))>1e-12,1);
 
 if all(coeff((end-m):end) <= 1e-12)
     error('Conditions are incompatible.');
@@ -48,12 +53,9 @@ N = N(find(abs(N)>1e-12,1):end);
 D = coeff((end-m):end)/coeff(I);
 D = D(find(abs(D)>1e-12,1):end);
 
-if isempty(N) || isempty(D)
-    N = 0; D = 0;
-elseif isempty(N)
-    N = 0; D = 1;
-elseif isempty(D)
-    N = 1; D = 0;
+[N,D] = ratSimplify(N,D);
+if any(abs(ratval(N,D,x)-f)>1e-12)
+    error('Conditions did not converge');
 end
 
 end

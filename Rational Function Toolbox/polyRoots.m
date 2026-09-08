@@ -1,12 +1,13 @@
 function R = polyRoots(p,tol)
 % polyRoots(p,tol) computes polynomial roots to arbitrary precision
 % 
-% Graham Holt, August 2026. Updated August 2026
+% Graham Holt, August 2026. Updated September 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
 % polyRoots(p)
 % polyRoots(p,tol)
+% polyRoots(___,realOnly)
 % R = polyRoots(___)
 % 
 %% Description
@@ -19,7 +20,6 @@ function R = polyRoots(p,tol)
 if ~exist('tol','var')
     tol = 1e-6;
 end
-
 R = roots(p);
 
 if license('test','symbolic_toolbox')

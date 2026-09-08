@@ -18,23 +18,16 @@ if ~exist('tol','var')
     tol = 1e-6;
 end
 
+[N,D] = ratShorten(N,D,tol);
 rootD = polyRoots(D,tol);
 
 for k = 1:length(rootD)
     n = length(N);
 
-    N = polyReduc(N,rootD(k));
+    N = polyReduc(N,rootD(k),tol);
     if length(N)~=n
-        D = polyReduc(D,rootD(k));
+        D = polyReduc(D,rootD(k),tol);
     end
 end
 
-N = N(find(N~=0,1):end);
-D = D(find(D~=0,1):end);
-if isempty(N) || isempty(D)
-    N = 0; D = 0;
-elseif isempty(N)
-    N = 0; D = 1;
-elseif isempty(D)
-    N = 1; D = 0;
-end
+[N,D] = ratShorten(N,D,tol);

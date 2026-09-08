@@ -1,7 +1,7 @@
 function P = polyDiffInt(p,d,x0,p0)
 % polyDiffInt(p,d) performs polynomial differentiation and integration
 % 
-% Graham Holt, July 2026. Updated July 2026
+% Graham Holt, July 2026. Updated September 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
@@ -14,7 +14,7 @@ function P = polyDiffInt(p,d,x0,p0)
 % differ-intergral of the input polynomial
 %
 % polyDiffInt(___,x0,p0) considers initial/boundary values for the integral
-% case with increasing derivative order (p0 = [p(x0) p'(x0) p''(x0) ...])
+% case with increasing derivative order (p0 = [P(x0) P'(x0) P''(x0) ...])
 
 % Ensures that inputs are valid and derivative is non-trivial
 if nargin<2
@@ -48,7 +48,4 @@ else
     end
 end
 
-P = P(find(P~=0,1):end);
-if isempty(P)
-    P = 0;
-end
+P = polyShorten(P);

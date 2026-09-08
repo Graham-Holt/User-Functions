@@ -1,7 +1,7 @@
-function p = polyReduc(p,r,tol)
+function P = polyReduc(p,r,tol)
 % polyReduc(p,r) divides out roots from polynomials
 % 
-% Graham Holt, August 2026. Updated August 2026
+% Graham Holt, August 2026. Updated September 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
@@ -22,17 +22,14 @@ end
 
 m = length(r); P = p;
 for k = 1:m
-    P = p; n = length(P);
+    n = length(P);
     if abs(polyval(P,r(k)))>tol
         continue;
     end
     for j = 2:n
        P(j) = P(j) + P(j-1)*r(k);
     end
-    p = P(1:(end-1));
+    P = P(1:(end-1));
 end
 
-p = p(find(p~=0,1):end);
-if isempty(p)
-    p = 0;
-end
+P = polyShorten(P);

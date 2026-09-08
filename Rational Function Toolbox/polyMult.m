@@ -2,7 +2,7 @@ function P = polyMult(varargin)
 % polyMult(p1,p2,...) performs vector convolutions for polynomial 
 % multiplication
 % 
-% Graham Holt, May 2026. Updated August 2026
+% Graham Holt, May 2026. Updated September 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
@@ -35,7 +35,4 @@ for k = 2:length(varargin)
     end
 end
 
-P = P(find(P~=0,1):end);
-if isempty(P)
-    P = 0;
-end
+P = polyShorten(P);

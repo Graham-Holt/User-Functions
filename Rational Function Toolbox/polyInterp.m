@@ -1,14 +1,14 @@
-function p = polyInterp(x,f,d)
+function P = polyInterp(x,f,d)
 % polyInterp(x,f) generates the simplest polynomial function defined by its 
 % derivatives at various points
 % 
-% Graham Holt, April 2026. Updated August 2026
+% Graham Holt, April 2026. Updated September 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
 % polyInterp(x,f)
 % polyInterp(___,d)
-% p = polyInterp(___)
+% P = polyInterp(___)
 % 
 %% Description
 % polyInterp(x,f) returns the simplest polynomial which evaluates to "f" at
@@ -42,12 +42,12 @@ end
 % Finds minimum norm solution
 V = Vaug(1:r,1:n);
 f = Vaug(1:r,n+1);
-p = V.'/(V*V.')*f;
+P = V.'/(V*V.')*f;
 
 % Reduces polynomial to minimal degree
-p = p(find(p~=0,1):end).';
-if isempty(p)
-    p = 0;
+P = polyShorten(P);
+if any(abs(polyval(P,x)-f)>1e-12)
+    error('Conditions did not converge');
 end
 
 end

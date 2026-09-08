@@ -1,7 +1,7 @@
 function P = polyComp(varargin)
 % polyComp(p1,p2,...) composes polynomials in the order provided
 % 
-% Graham Holt, July 2026. Updated July 2026
+% Graham Holt, July 2026. Updated September 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
@@ -31,7 +31,4 @@ for k = 2:length(varargin)
     P = Ptemp + [zeros(1, (n-1)*(m-1)) P(n)];
 end
 
-P = P(find(P~=0,1):end);
-if isempty(P)
-    P = 0;
-end
+P = polyShorten(P);

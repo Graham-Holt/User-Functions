@@ -27,30 +27,24 @@ for k = 2:(length(varargin)/2)
     p = length(varargin{2*k-1});
     q = length(varargin{2*k});
     
-    Ntemp = zeros(1,1+(n-1)*(p-1));
+    Ntemp = zeros(1,1+(n-1)*(max(p,q) - 1));
     for j = 1:n
-        Ntemp = Ntemp + [zeros(1,(j-1)*(p-q)), N(j)*polyMult([repmat(varargin(2*k-1),1,n-j),repmat(varargin(2*k),1,j-1)])];
+        numZeros = max((j-1)*(p-q),(n-j)*(q-p));
+        Ntemp = Ntemp + [zeros(1,numZeros), N(j)*polyMult([repmat(varargin(2*k-1),1,n-j),repmat(varargin(2*k),1,j-1)])];
     end
     N = Ntemp;
-    Dtemp = zeros(1,1+(m-1)*(q-1));
+    Dtemp = zeros(1,1+(m-1)*(max(p,q) - 1));
     for j = 1:m
-        Dtemp = Dtemp + [zeros(1,(j-1)*(p-q)), D(j)*polyMult([repmat(varargin(2*k-1),1,m-j),repmat(varargin(2*k),1,j-1)])];
+        numZeros = max((j-1)*(p-q),(m-j)*(q-p));
+        Dtemp = Dtemp + [zeros(1,numZeros), D(j)*polyMult([repmat(varargin(2*k-1),1,m-j),repmat(varargin(2*k),1,j-1)])];
     end
     D = Dtemp;
 
-    if n>m
+    if n > m
         D = polyMult([{D},repmat(varargin{2*k},1,n-m)]);
-    elseif n<m
+    elseif n < m
         N = polyMult([{N},repmat(varargin{2*k},1,m-n)]);
     end
-end
 
-N = N(find(N~=0,1):end);
-D = D(find(D~=0,1):end);
-if isempty(N) || isempty(D)
-    N = 0; D = 0;
-elseif isempty(N)
-    N = 0; D = 1;
-elseif isempty(D)
-    N = 1; D = 0;
+    [N,D] = ratSimplify(N,D);
 end
