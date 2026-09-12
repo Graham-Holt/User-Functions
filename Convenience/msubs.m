@@ -1,4 +1,19 @@
 function funcM = msubs(varargin)
+% msubs(func,M) evaluates symbolic function for matrix inputs
+% 
+% Graham Holt, September 2026. Updated September 2026
+% Embry-Riddle Aeronautical University
+% 
+%% Syntax
+% msubs(func,M)
+% msubs(func,var,M)
+% funcM = msubs(__)
+% 
+%% Description
+% msubs(func,M) evaluates the symbolic function at the given square matrix
+% using functional calculus (f(M) = V*f(D)/V)
+% 
+% msubs(func,var,M) specifies the variable to apply the matrix to
 
 func = varargin{1};
 if isscalar(symvar(func)) && nargin < 3
@@ -7,6 +22,10 @@ if isscalar(symvar(func)) && nargin < 3
 else
     var = varargin{2};
     M = varargin{3};
+end
+
+if size(M,1)~=size(M,2)
+    error('Input matrix must be square.');
 end
 
 n = size(M,1);
