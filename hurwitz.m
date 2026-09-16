@@ -1,7 +1,7 @@
 function [stable, tabRH] = hurwitz(p)
 % hurwitz(p) determines conditions for Hurwitz stability on polynomials
 % 
-% Graham Holt, March 2026. Updated June 2026
+% Graham Holt, March 2026. Updated September 2026
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
@@ -81,12 +81,11 @@ assume(epsilon,'clear');
 if ~isa(p,'numeric')
 
 % Simplifies symbolic conditions for stability
+stable = stable(stable~=symtrue);
 for k = 1:length(stable)
-    if stable(k)==symtrue
-        continue;
-    end
     assume([prevAssume stable(k)]);
     stable([1:(k-1) (k+1):end]) = simplify(stable([1:(k-1) (k+1):end]));
+    assume(symvar(stable),'clear');
 end
 
 end
