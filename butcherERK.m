@@ -55,7 +55,7 @@ if p==1
 end
 
 A = sym('a%d%d',[s s]); A = blkdiag(tril(A,-1),1);
-K = intpartition(p-1); k = 1;
+K = intPartition(p-1); k = 1;
 for j = 1:length(K)
     Phi = {}; M = [];
     for i = 1:length(K{j})
@@ -101,7 +101,7 @@ if p==1
     T = 1; return;
 end
 
-T = 0; P = intpartition(p-1);
+T = 0; P = intPartition(p-1);
 for k = 1:length(P)
     tau = 1;
     for j = 1:length(P{k})
@@ -113,24 +113,38 @@ end
 end
 
 
-function P = intpartition(n)
-% intpartition(n) generates the integer partitions of "n".
+function P = intPartition(n,m,leq)
+% intPartition(n) generates the integer partitions of "n".
 % 
 % Graham Holt, June 2026. Updated June 2026.
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% intpartition(n)
-% P = intpartition(n)
+% intPartition(n)
+% P = intPartition(n)
 % 
 %% Description
-% intpartition(n) returns a cell array with the integer partitions of "n".
+% intPartition(n) returns a cell array with the integer partitions of "n".
+%
+% intPartition(n,m) returns a cell array with the integer partitions of "n"
+% containing at most "m" summands.
+%
+% intPartition(n,m,1) returns a cell array with the integer partitions of
+% "n" containing exactly "m" summands.
 
 p = zeros(1,n); p(1) = n;
 P = {}; k = 1;
+if nargin < 2
+    m = n;
+    leq = 0;
+elseif nargin < 3
+    leq = 0;
+end
 
 while true
-    P{end+1} = p(1:k);
+    if ((k < m)&&(~leq)) || (k == m)
+       P{end+1} = p(1:k); 
+    end
     if k==n
         return;
     end

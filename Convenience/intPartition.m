@@ -1,20 +1,20 @@
-function P = intpartition(n,m,leq)
-% intpartition(n) generates the integer partitions of "n".
+function P = intPartition(n,m,leq)
+% intPartition(n) generates the integer partitions of "n".
 % 
 % Graham Holt, June 2026. Updated June 2026.
 % Embry-Riddle Aeronautical University
 % 
 %% Syntax
-% intpartition(n)
-% P = intpartition(n)
+% intPartition(n)
+% P = intPartition(n)
 % 
 %% Description
-% intpartition(n) returns a cell array with the integer partitions of "n".
+% intPartition(n) returns a cell array with the integer partitions of "n".
 %
-% intpartition(n,m) returns a cell array with the integer partitions of "n"
+% intPartition(n,m) returns a cell array with the integer partitions of "n"
 % containing at most "m" summands.
 %
-% intpartition(n,m,1) returns a cell array with the integer partitions of
+% intPartition(n,m,1) returns a cell array with the integer partitions of
 % "n" containing exactly "m" summands.
 
 p = zeros(1,n); p(1) = n;

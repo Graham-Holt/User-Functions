@@ -1,4 +1,4 @@
-function P = polyInterp(x,f,d)
+function P = polyInterp(x,f,d,tol)
 % polyInterp(x,f) generates the simplest polynomial function defined by its 
 % derivatives at various points
 % 
@@ -16,10 +16,16 @@ function P = polyInterp(x,f,d)
 %
 % polyInterp(___,d) considers the order "d" derivative of the polynomial to
 % equal "f" at "x".
+%
+% polyInterp(___,tol) allows you to adjust the tolerance for the polynomial
+% to be considered an interpolant (default: 1e-6)
 
 % Ensures that there exists an interpolating solution (no least-squares)
-if nargin<3
+if nargin < 3
     d = zeros(length(x),1);
+end
+if nargin < 4
+    tol = 1e-6;
 end
 if ~(length(d)==length(x) && length(f)==length(x))
     error('Vetcor inputs must have the same length');
@@ -29,24 +35,18 @@ if any(d>=length(d)) || any(d~=round(d))
 end
 x = reshape(x,[],1); 
 f = reshape(f,[],1);
-n = length(x);
-
-% Constructs matrix and augments with function values
-V = cvander(x,[],d); Vaug = rref([V f]); r = rank(V);
-
-if any(Vaug((r+1):n,n+1)~=0)
-    numIncompatible = double(sum(Vaug((r+1):n,n+1)~=0));
-    error(['(',num2str(numIncompatible),') conditions are incompatible.']);
-end
 
 % Finds minimum norm solution
-V = Vaug(1:r,1:n);
-f = Vaug(1:r,n+1);
-P = V.'/(V*V.')*f;
+V = cvander(x,[],d);
+if rank(V) ~= rank([V, f])
+    error(['(',num2str(rank([V, f]) - rank(V)),') conditions are incompatible.']);
+end
+
+P = f.'/(V*V.')*V;
 
 % Reduces polynomial to minimal degree
 P = polyShorten(P);
-if any(abs(polyval(P,x)-f)>1e-12)
+if any(abs(polyvalDiff(P,x,d)-f)>tol)
     error('Conditions did not converge');
 end
 
@@ -88,6 +88,36 @@ for k = 1:length(v)
     for j = 1:d(k)
         V(k,:) = V(k,:).*circshift(del,1-j);
     end
+end
+
+end
+
+function P = polyvalDiff(p,x,d)
+% polvalDiff(p,x) evaluates polynomials and their derivatives.
+% 
+% Graham Holt, October 2026. Updated October 2026
+% Embry-Riddle Aeronautical University
+% 
+%% Syntax
+% polvalDiff(p,x)
+% polvalDiff(p,x,d)
+% P = polvalDiff(___)
+% 
+%% Description
+% polvalDiff(p,x) returns the same result as the usual polyval() function
+%
+% polvalDiff(p,x,d) returns a similar result with the value of the (d)th
+% derivative of the polynomial at (x)
+
+if nargin < 3
+    d = zeros(1,length(x));
+end
+if length(d) ~= length(x)
+    error('(d) must have the same length as (x)');
+end
+
+for k = 1:length(x)
+    P(k,:) = polyval(polyDiffInt(p,d(k)),x(k));
 end
 
 end

@@ -52,31 +52,39 @@ switch method(1)
 case 'x'
     K = placeX(A,B,eig(1:n));
     L = placeX(A',C',eig((n+1):end)).';
+
+    Abar = A - B*K;
+    Bbar = B;
+    Cbar = C - D*K;
+    Dbar = D;
 case 'y'
     K = placeY(A,B,C,D,eig);
     L = [];
+    
+    s = n-m-p+1;
+    A = blkdiag(A,zeros(s));
+    B = blkdiag(B,eye(s));
+    C = blkdiag(C,eye(s));
+    D = blkdiag(D,zeros(s));
 
-    Kinf = K(1:m,1:p) - K(1:m,(p+1):end)/K((m+1):end,(p+1):end)*K((m+1):end,1:p);
+    Abar = A - B*K/(eye(p+s) - D*K)*C;
+    Bbar = B*(eye(m+s) - K/(eye(p+s) - D*K)*D);
+    Cbar = (eye(p+s) - D*K)\C;
+    Dbar = (eye(p+s) - D*K)\D;
 otherwise
     error('Improper method chosen.');
 end
 
 if nargout > 2
     
-switch method
-case 'xx'
-    Kr = -(A - B*K)\B;
-case 'xy'
-    Kr = D - (C + D*K)/(A - B*K)*B;
-case 'yx'
-    Kr = -(A - B*Kinf/(eye(p) + D*Kinf)*C)\B*(eye(m) + Kinf/(eye(p) + D*Kinf)*D);
-case 'yy'
-    Kr = -(A - B*Kinf/(eye(p) + D*Kinf)*C)\B*(eye(m) + Kinf/(eye(p) + D*Kinf)*D);
-    Kr = (eye(p) + D*Kinf)\(D + C*Kr);
+switch method(2)
+case 'x'
+    Kr = pinv(-Abar\Bbar);
+case 'y'
+    Kr = pinv(Dbar - Cbar/Abar*B);
 otherwise
     error('Improper method chosen.');
 end
-Kr = pinv(Kr);
 
 end
 
