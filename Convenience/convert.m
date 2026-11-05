@@ -20,6 +20,10 @@ function x2 = convert(x1,u1,u2,abs)
 % 
 % List of Units: https://www.mathworks.com/help/symbolic/units-list.html
 
+if nargin < 4
+    abs = 0;
+end
+
 u1 = str2symunit(u1); u2 = str2symunit(u2);
 
 if abs
