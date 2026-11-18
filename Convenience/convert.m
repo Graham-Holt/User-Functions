@@ -24,7 +24,19 @@ if nargin < 4
     abs = 0;
 end
 
-u1 = str2symunit(u1); u2 = str2symunit(u2);
+u1 = str2symunit(u1); 
+
+try 
+    u2 = str2symunit(u2);
+catch ME
+    if ~any(unitSystems == u2)
+        error("Undefined unit or unit system '"+u2+"'");
+    end
+end
+
+if ~checkUnits(u1==u2,'Compatible')
+    error('Units are not compatible.');
+end
 
 if abs
     % Inclusion of small factor to allow for zero-temperature input

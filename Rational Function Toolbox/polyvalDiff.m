@@ -15,13 +15,12 @@ function P = polyvalDiff(p,x,d)
 % polvalDiff(p,x,d) returns a similar result with the value of the (d)th
 % derivative of the polynomial at (x)
 
+x = reshape(x,[],1);
+
 if nargin < 3
-    d = zeros(1,length(x));
-end
-if length(d) ~= length(x)
-    error('(d) must have the same length as (x)');
+    d = 0;
 end
 
-for k = 1:length(x)
-    P(k,:) = polyval(polyDiffInt(p,d(k)),x(k));
+for k = 1:length(d)
+    R(:,k) = polyval(polyDiffInt(N,D,d(k)),x);
 end
